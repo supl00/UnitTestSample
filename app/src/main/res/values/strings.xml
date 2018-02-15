@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Coinman</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+
+    <!-- Tab -->
+    <string name="tab_name_chart">Chart</string>
+    <string name="tab_name_board">Board</string>
+    <string name="tab_name_information">Information</string>
+</resources>

@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">코인맨</string>
+    <string name="action_settings">설정</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+
+    <!-- Tab -->
+    <string name="tab_name_chart">차트</string>
+    <string name="tab_name_board">게시판</string>
+    <string name="tab_name_information">정보</string>
+</resources>
