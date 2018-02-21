@@ -39,22 +39,42 @@ public class ChartFragment extends Fragment {
 
     private ReorderableLinearLayout mContainer;
 
+    ChartLayoutManager mLayoutManager;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    public void setEnableEditMode(boolean enabled) {
+        if (mLayoutManager != null) {
+            mLayoutManager.setEnableEditMode(enabled);
+        }
+    }
+
+    public boolean isEditModeEnabled() {
+        if (mLayoutManager != null) {
+            return mLayoutManager.isEditModeEnabled();
+        }
+
+        return false;
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_chart_main, null);
+
+        mLayoutManager = new ChartLayoutManager(view);
+
         mContainer = view.findViewById(R.id.chart_container);
 
         Observable.range(0, CoinGenerator.MAX_COIN_COUNT)
                 .subscribeOn(Schedulers.io())
                 .map(integer -> CoinGenerator.getCoinSampleData(integer, view.getResources(), view.getContext()))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(coinData -> addCoin(createCoin(coinData)));
+//                .subscribe(coinData -> mLayoutManager.addCoin(mLayoutManager.addCoinList(coinData)));
+                .subscribe(coinData -> mLayoutManager.addCoinList(coinData));
 
 //        PageService pageService = ApiUtils.getRpJsoupService();
 //
@@ -249,52 +269,4 @@ public class ChartFragment extends Fragment {
 //            }
 //        }
 //    }
-
-    private ViewGroup createCoin(ArrayList<CoinData> list) {
-        LinearLayout coinInfo = (LinearLayout) View.inflate(getContext(), R.layout.chart_coin_info, null);
-        TextView abbName = coinInfo.findViewById(R.id.coin_abb_name);
-        abbName.setText(list.get(0).getAbbName());
-
-        TextView diffView = coinInfo.findViewById(R.id.coin_represent_ratio);
-        diffView.setText(String.format("%.2f", list.get(0).getDiffPercent()) + "%");
-
-        ImageView iconView = coinInfo.findViewById(R.id.coin_icon);
-        iconView.setImageDrawable(list.get(0).getDrawable());
-
-        ReorderableLinearLayout coinDetailContainer = coinInfo.findViewById(R.id.coin_detail_container);
-        int detailCount = list.size();
-        for (int i = 0; i < detailCount; i++) {
-            LinearLayout coinDetailLayout = (LinearLayout) View.inflate(getContext(), R.layout.chart_coin_detail, null);
-            CoinData data = list.get(i);
-
-            TextView exchangeView = coinDetailLayout.findViewById(R.id.exchange);
-            exchangeView.setText(data.getExchange());
-
-            TextView diffPercentView = coinDetailLayout.findViewById(R.id.rate);
-            diffPercentView.setText(String.format("%.2f", data.getDiffPercent()) + "%");
-
-            TextView priceView = coinDetailLayout.findViewById(R.id.coin_price);
-            priceView.setText(String.valueOf(data.getPrice()));
-
-            TextView unitView = coinDetailLayout.findViewById(R.id.coin_unit);
-            unitView.setText(data.getCurrencyUnit());
-
-            TextView premiumView = coinDetailLayout.findViewById(R.id.coin_premium);
-            premiumView.setText(String.format("%.2f", data.getPremium()) + "%");
-
-            if (i > 0) {
-//                coinDetailLayout.setVisibility(View.GONE);
-            }
-
-            coinDetailContainer.addView(coinDetailLayout);
-            coinDetailContainer.setViewDraggable(coinDetailLayout, coinDetailLayout.findViewById(R.id.coin_detail_thumb));
-        }
-
-        return coinInfo;
-    }
-
-    private void addCoin(ViewGroup coin) {
-        mContainer.addView(coin);
-        mContainer.setViewDraggable(coin, coin.findViewById(R.id.coin_info_thumb));
-    }
 }
