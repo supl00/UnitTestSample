@@ -1,5 +1,7 @@
 package com.gazua.ddeokrok.coinman.board;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,6 +12,7 @@ import android.widget.TextView;
 
 import com.gazua.ddeokrok.coinman.R;
 import com.gazua.ddeokrok.coinman.board.data.BoardData;
+import com.gazua.ddeokrok.coinman.common.WebViewActivity;
 
 import java.util.List;
 
@@ -33,7 +36,14 @@ public class BoardRecyclerViewAdapter extends RecyclerView.Adapter<BoardRecycler
 
     @Override
     public void onBindViewHolder(BoardViewHoler holder, int position) {
-        holder.update(this.datas.get(position));
+        BoardData data = this.datas.get(position);
+        holder.update(data);
+        holder.setOnItemClickListener(v -> {
+            Intent intent = new Intent(holder.itemView.getContext(), WebViewActivity.class);
+            intent.putExtra("url", data.getLinkUrl());
+            holder.itemView.getContext().startActivity(intent);
+        });
+
     }
 
     @Override
@@ -62,6 +72,10 @@ public class BoardRecyclerViewAdapter extends RecyclerView.Adapter<BoardRecycler
             this.userName.setText(data.getUserName());
             this.count.setText(data.getCount());
             this.date.setText(data.getDate());
+        }
+
+        void setOnItemClickListener(View.OnClickListener listener) {
+            this.itemView.setOnClickListener(listener);
         }
     }
 }

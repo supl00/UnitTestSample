@@ -86,10 +86,13 @@ public class BoardFragment extends Fragment {
                                                 .orElse(null),
                                         localElement.select(".list_time > span").html(),
                                         localElement.select(".list_hit > span").html(),
-                                        "https://m.clien.net/" + localElement.select("factory").attr("href"),
+                                        "https://m.clien.net/" + localElement.select("a").attr("href"),
                                         localElement.select(".nickname").html(),
                                         localElement.select(".nickimg > img").attr("src")))
-                                .forEach(boardData -> list.add(boardData)));
+                                .forEach(boardData -> {
+                                    Logger.d(TAG, "data : " + boardData.toString());
+                                    list.add(boardData);
+                                }));
 
                 recyclerView.getAdapter().notifyDataSetChanged();
 //                TextView text = getView().findViewById(R.id.response);
