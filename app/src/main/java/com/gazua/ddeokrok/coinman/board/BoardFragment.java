@@ -18,27 +18,20 @@ import com.gazua.ddeokrok.coinman.network.PageService;
 import com.gazua.ddeokrok.coinman.network.page.Page;
 
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Element;
 
-import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
-import okhttp3.Interceptor;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.ResponseBody;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
-import retrofit2.Converter;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by kimju on 2018-02-15.
@@ -75,26 +68,33 @@ public class BoardFragment extends Fragment {
                 Logger.d(TAG, "res : " + response);
                 final RecyclerView recyclerView = boardRecyclerView;
                 final List<BoardData> list = boardDataList;
-                Optional.ofNullable(response.body())
-                        .ifPresent(page -> Jsoup.parse(page.getContent()).select("div.list_item")
-                                .stream()
-                                .map(localElement -> BoardData.asData(localElement.select(".list_title .list_subject > span ")
-                                                .stream()
-                                                .filter(element -> element.hasAttr("data-role"))
-                                                .map(element -> element.html())
-                                                .findFirst()
-                                                .orElse(null),
-                                        localElement.select(".list_time > span").html(),
-                                        localElement.select(".list_hit > span").html(),
-                                        "https://m.clien.net/" + localElement.select("a").attr("href"),
-                                        localElement.select(".nickname").html(),
-                                        localElement.select(".nickimg > img").attr("src")))
-                                .forEach(boardData -> {
-                                    Logger.d(TAG, "data : " + boardData.toString());
-                                    list.add(boardData);
-                                }));
-
-                recyclerView.getAdapter().notifyDataSetChanged();
+                Observable.just(Optional.ofNullable(response.body()).orElse(Page.EMPTY_PAGE).getContent())
+                        .filter(s -> !s.isEmpty())
+                        .map(Jsoup::parse)
+                        .map(document -> document.select("div.list_item"))
+                        .flatMap(elements -> Observable.range(0, elements.size() - 1).map(elements::get))
+                        .map(elements -> BoardData.asData(elements.select(".list_title .list_subject > span ")
+                                        .stream()
+                                        .filter(element -> element.hasAttr("data-role"))
+                                        .map(Element::html)
+                                        .findFirst()
+                                        .orElse(""),
+                                elements.select(".list_time > span").html(),
+                                elements.select(".list_hit > span").html(),
+                                "https://m.clien.net/" + elements.select("a").attr("href"),
+                                elements.select(".nickname").html(),
+                                elements.select(".nickimg > img").attr("src")))
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnTerminate(() -> {
+                            recyclerView.getAdapter().notifyDataSetChanged();
+                            Logger.d(TAG, "doOnComplete");
+                        })
+                        .observeOn(Schedulers.io())
+                        .forEach(data -> {
+                            Logger.d(TAG, "data : " + data.toString());
+                            list.add(data);
+                        });
 //                TextView text = getView().findViewById(R.id.response);
 //                text.setText(Html.fromHtml(response.body().getContent(), Html.FROM_HTML_MODE_LEGACY));
 //                while (true) {
