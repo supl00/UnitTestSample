@@ -26,7 +26,7 @@ public class CoinGenerator {
 
 //        int count = getRandomNumber(5, 10);
         for (int i = 0; i < 8; i++) {
-            CoinData data = new CoinData();
+            CoinData data = new CoinData(CoinInfo.COIN.values()[index].getName(), CoinInfo.EXCHANGE.values()[i].getName());
             data.setName(CoinInfo.COIN.values()[index].getName());
             data.setAbbName(CoinInfo.COIN.values()[index].getAbbName());
             data.setDiffPercent(getRandomRatio(0, 70));

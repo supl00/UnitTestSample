@@ -4,16 +4,25 @@ package com.gazua.ddeokrok.coinman.model;
 import android.graphics.drawable.Drawable;
 
 public class CoinData {
-    private String mExchange;
     private String mCoinName;
     private String mCoinAbbName;
+    private String mUniqueName;
+    private String mExchange;
+
     private int mPrice;
-    private Drawable mDrawable;
-
-    private String mCurrencyUnit = "KRW";
-
     private float mDiffPercent = 0.0f;
     private float mPremium = 0.0f;
+    private String mCurrencyUnit = "KRW";
+
+    private Drawable mDrawable;
+
+    public CoinData(String coinName, String exchange) {
+        mUniqueName = coinName + exchange;
+    }
+
+    public String getUniqueName() {
+        return mUniqueName;
+    }
 
     public void setExchange(String str) {
         mExchange = str;

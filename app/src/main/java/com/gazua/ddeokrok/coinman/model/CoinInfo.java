@@ -7,10 +7,6 @@ import android.graphics.drawable.Drawable;
 import com.gazua.ddeokrok.coinman.R;
 
 
-/**
- * Created by 집 on 2018-02-11.
- */
-
 public class CoinInfo {
     public enum EXCHANGE {
         BITHUMB {
@@ -34,7 +30,6 @@ public class CoinInfo {
             public boolean isUSDUnitType() {
                 return false;
             }
-
         },
         KORBIT {
             @Override
@@ -105,7 +100,31 @@ public class CoinInfo {
 
         public abstract String getName();
         public abstract boolean isUSDUnitType();
+
+        static EXCHANGE fromName(String name) {
+            for (EXCHANGE ex : values()) {
+                if (ex.getName().compareTo(name) == 0) {
+                    return ex;
+                }
+            }
+            throw new IllegalArgumentException();
+        }
     }
+
+
+    public static final int BTC_ID = 100;
+    public static final int ETH_ID = 200;
+    public static final int DASH_ID = 300;
+    public static final int LTC_ID = 400;
+    public static final int ETC_ID = 500;
+    public static final int XRP_ID = 600;
+    public static final int BCH_ID = 700;
+    public static final int XMR_ID = 800;
+    public static final int QTUM_ID = 900;
+    public static final int ZEC_ID = 1000;
+    public static final int BTG_ID = 1100;
+    public static final int EOS_ID = 1200;
+
 
     public enum COIN {
         BTC {
@@ -126,6 +145,11 @@ public class CoinInfo {
                 }
                 return res.getDrawable(R.drawable.btc2, context.getTheme());
             }
+
+            @Override
+            public int getCoinId() {
+                return BTC_ID;
+            }
         },
         ETH {
             @Override
@@ -144,6 +168,11 @@ public class CoinInfo {
                     return null;
                 }
                 return res.getDrawable(R.drawable.eth2, context.getTheme());
+            }
+
+            @Override
+            public int getCoinId() {
+                return ETH_ID;
             }
         },
         DASH {
@@ -164,6 +193,11 @@ public class CoinInfo {
                 }
                 return res.getDrawable(R.drawable.dash, context.getTheme());
             }
+
+            @Override
+            public int getCoinId() {
+                return DASH_ID;
+            }
         },
         LTC {
             @Override
@@ -182,6 +216,11 @@ public class CoinInfo {
                     return null;
                 }
                 return res.getDrawable(R.drawable.ltc, context.getTheme());
+            }
+
+            @Override
+            public int getCoinId() {
+                return LTC_ID;
             }
         },
         ETC {
@@ -202,6 +241,11 @@ public class CoinInfo {
                 }
                 return res.getDrawable(R.drawable.etc, context.getTheme());
             }
+
+            @Override
+            public int getCoinId() {
+                return ETC_ID;
+            }
         },
         XRP {
             @Override
@@ -220,6 +264,11 @@ public class CoinInfo {
                     return null;
                 }
                 return res.getDrawable(R.drawable.xrp, context.getTheme());
+            }
+
+            @Override
+            public int getCoinId() {
+                return XRP_ID;
             }
         },
         BCH {
@@ -240,6 +289,11 @@ public class CoinInfo {
                 }
                 return res.getDrawable(R.drawable.bch, context.getTheme());
             }
+
+            @Override
+            public int getCoinId() {
+                return BCH_ID;
+            }
         },
         XMR {
             @Override
@@ -258,6 +312,11 @@ public class CoinInfo {
                     return null;
                 }
                 return res.getDrawable(R.drawable.xmr, context.getTheme());
+            }
+
+            @Override
+            public int getCoinId() {
+                return XMR_ID;
             }
         },
         QTUM {
@@ -278,6 +337,11 @@ public class CoinInfo {
                 }
                 return res.getDrawable(R.drawable.qtum, context.getTheme());
             }
+
+            @Override
+            public int getCoinId() {
+                return QTUM_ID;
+            }
         },
         ZEC {
             @Override
@@ -296,6 +360,11 @@ public class CoinInfo {
                     return null;
                 }
                 return res.getDrawable(R.drawable.zec, context.getTheme());
+            }
+
+            @Override
+            public int getCoinId() {
+                return ZEC_ID;
             }
         },
         BTG {
@@ -316,6 +385,11 @@ public class CoinInfo {
                 }
                 return res.getDrawable(R.drawable.btg, context.getTheme());
             }
+
+            @Override
+            public int getCoinId() {
+                return BTG_ID;
+            }
         },
         EOS {
             @Override
@@ -335,10 +409,25 @@ public class CoinInfo {
                 }
                 return res.getDrawable(R.drawable.eos, context.getTheme());
             }
+
+            @Override
+            public int getCoinId() {
+                return EOS_ID;
+            }
         };
 
         public abstract String getName();
         public abstract String getAbbName();
         public abstract Drawable getIcon(Resources res, Context context);
+        public abstract int getCoinId();
+
+        static COIN fromName(String name) {
+            for (COIN coin : values()) {
+                if (coin.getAbbName().compareTo(name) == 0) {
+                    return coin;
+                }
+            }
+            throw new IllegalArgumentException();
+        }
     }
 }
