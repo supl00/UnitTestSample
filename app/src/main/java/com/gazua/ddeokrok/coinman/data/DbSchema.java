@@ -1,4 +1,4 @@
-package com.gazua.ddeokrok.coinman.model;
+package com.gazua.ddeokrok.coinman.data;
 
 
 public class DbSchema {

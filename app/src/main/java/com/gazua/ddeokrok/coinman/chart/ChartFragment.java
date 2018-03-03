@@ -6,20 +6,18 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.Button;
+import android.widget.Toast;
 
 import com.gazua.ddeokrok.coinman.R;
-import com.gazua.ddeokrok.coinman.model.CoinData;
+import com.gazua.ddeokrok.coinman.data.CoinData;
+import com.gazua.ddeokrok.coinman.data.DatabaseHelper;
 import com.gazua.ddeokrok.coinman.util.CoinGenerator;
 import com.gazua.ddeokrok.coinman.view.ReorderableLinearLayout;
 
 import java.util.ArrayList;
 
 import io.reactivex.Observable;
-import io.reactivex.Scheduler;
-import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
@@ -75,6 +73,8 @@ public class ChartFragment extends Fragment {
                 .observeOn(AndroidSchedulers.mainThread())
 //                .subscribe(coinData -> mLayoutManager.addCoin(mLayoutManager.addCoinList(coinData)));
                 .subscribe(coinData -> mLayoutManager.addCoinList(coinData));
+
+        initTestLayout(view);
 
 //        PageService pageService = ApiUtils.getRpJsoupService();
 //
@@ -269,4 +269,45 @@ public class ChartFragment extends Fragment {
 //            }
 //        }
 //    }
+
+    private void initTestLayout(View v) {
+        Button refreshButton = v.findViewById(R.id.chart_test_refresh);
+        refreshButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getActivity(), "Refresh", Toast.LENGTH_LONG).show();
+
+                Observable.range(0, CoinGenerator.MAX_COIN_COUNT)
+                        .subscribeOn(Schedulers.io())
+                        .map(integer -> CoinGenerator.getCoinSampleData(integer, getResources(), getContext()))
+                        .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(coinData -> mLayoutManager.addCoin(mLayoutManager.addCoinList(coinData)));
+                        .subscribe(coinData -> addCoinList(coinData));
+
+            }
+        });
+
+        Button editButton = v.findViewById(R.id.chart_test_edit);
+        editButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getActivity(), "Edit", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        Button deleteAllButton = v.findViewById(R.id.chart_test_delete_all);
+        deleteAllButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getActivity(), "Delete All", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void addCoinList(ArrayList<CoinData> coinLists) {
+        DatabaseHelper dbHelper = DatabaseHelper.getInstance(getContext());
+        for (CoinData coin : coinLists) {
+            dbHelper.addOrUpdateCoinData(coin);
+        }
+    }
 }

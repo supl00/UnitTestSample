@@ -1,11 +1,14 @@
-package com.gazua.ddeokrok.coinman.model;
+package com.gazua.ddeokrok.coinman.data;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Environment;
 import android.util.Log;
+
+import java.io.File;
 
 
 public class DatabaseHelper extends SQLiteOpenHelper {
@@ -50,6 +53,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public long addOrUpdateCoinData(CoinData coin) {
+        Log.d(TAG, "addOrUpdateCoinData() : " + coin.getName() + ", " + coin.getExchange());
+
         long coinId = getCoinPrimaryId(coin);
         long userId = -1;
 
@@ -95,6 +100,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public void deleteAll(String tableName) {
+        Log.d(TAG, "deleteAll()");
+
         SQLiteDatabase db = getWritableDatabase();
         db.beginTransaction();
         try {
@@ -108,6 +115,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     private long getCoinPrimaryId(CoinData coin) {
+        Log.d(TAG, "getCoinPrimaryId()");
         long rv = -1;
 
         SQLiteDatabase db = getReadableDatabase();
@@ -115,7 +123,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 DbSchema.Chart.Coin.KEY_COIN_ID
         };
 
-        String whereclause = DbSchema.Chart.Coin.KEY_COIN_NAME + "=? AND" +
+        String whereclause = DbSchema.Chart.Coin.KEY_COIN_NAME + "=? AND " +
                 DbSchema.Chart.Coin.KEY_COIN_ABB_NAME + "=?";
 
         String[] whereargs = new String[] {
@@ -139,6 +147,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         }
 
+        Log.d(TAG, "getCoinPrimaryId() return : " + rv);
         return rv;
     }
 }
