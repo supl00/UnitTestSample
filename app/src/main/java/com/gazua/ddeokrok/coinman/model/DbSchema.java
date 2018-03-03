@@ -11,7 +11,7 @@ public class DbSchema {
                 Coin.KEY_COIN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
                 Coin.KEY_COIN_NAME + " TEXT NOT NULL, " +
                 Coin.KEY_COIN_ABB_NAME + " TEXT NOT NULL, " +
-                Coin.KEY_COIN_IS_VISIBLE + " TEXT NOT NULL" +
+                Coin.KEY_COIN_IS_VISIBLE + " INTEGER NOT NULL DEFAULT 1" +
                 ")";
 
         public static final String CREATE_EXCHANGE_TABLE = "CREATE TABLE " + TABLE_EXCHANGES +
@@ -22,7 +22,7 @@ public class DbSchema {
                 Exchange.KEY_EXCHANGE_DIFF_PERCENT + " TEXT NOT NULL, " +
                 Exchange.KEY_EXCHANGE_PREMIUM + " TEXT NOT NULL, " +
                 Exchange.KEY_EXCHANGE_CURRENCY_UNIT + " TEXT NOT NULL, " +
-                Exchange.KEY_EXCHANGE_IS_VISIBLE + " TEXT NOT NULL, " +
+                Exchange.KEY_EXCHANGE_IS_VISIBLE + " INTEGER NOT NULL DEFAULT 1, " +
                 Exchange.KEY_EXCHANGE_FK_COIN + " INTEGER, " +
                 " FOREIGN KEY(" + Exchange.KEY_EXCHANGE_FK_COIN + ") REFERENCES " + TABLE_COINS + "(" + Coin.KEY_COIN_ID + ")" +
                 ")";

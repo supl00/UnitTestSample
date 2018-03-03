@@ -49,15 +49,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public long updateCoinData(CoinData coin) {
-        SQLiteDatabase db = getWritableDatabase();
+    public long addOrUpdateCoinData(CoinData coin) {
+        long coinId = getCoinPrimaryId(coin);
         long userId = -1;
 
+        SQLiteDatabase db = getWritableDatabase();
         db.beginTransaction();
         try {
             ContentValues coinContent = new ContentValues();
             coinContent.put(DbSchema.Chart.Coin.KEY_COIN_NAME, coin.getName());
-            coinContent.put(DbSchema.Chart.Coin.KEY_COIN_ABB_NAME, coin.getName());
+            coinContent.put(DbSchema.Chart.Coin.KEY_COIN_ABB_NAME, coin.getAbbName());
 
             ContentValues exchangeContent = new ContentValues();
             exchangeContent.put(DbSchema.Chart.Exchange.KEY_EXCHANGE_NAME, coin.getExchange());
@@ -66,67 +67,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             exchangeContent.put(DbSchema.Chart.Exchange.KEY_EXCHANGE_PREMIUM, coin.getPremium());
             exchangeContent.put(DbSchema.Chart.Exchange.KEY_EXCHANGE_CURRENCY_UNIT, coin.getCurrencyUnit());
 
-            Cursor cursor = db.query(DbSchema.Chart.TABLE_COINS,
-                    new String[] { DbSchema.Chart.Coin.KEY_COIN_ID}, // SELECT
-                    String.format("%s= ?", DbSchema.Chart.Coin.KEY_COIN_NAME), new String[] {coin.getName()},
-                    null, null, null, null);
+            if (coinId == -1) {
+                coinId = db.insertOrThrow(DbSchema.Chart.TABLE_COINS, null, coinContent);
 
-            if (cursor != null) {
-
-            } else {
-                long row = db.insertOrThrow(DbSchema.Chart.TABLE_COINS, null, coinContent);
-                exchangeContent.put(DbSchema.Chart.Exchange.KEY_EXCHANGE_FK_COIN, row);
-
-                userId = db.insertOrThrow(DbSchema.Chart.TABLE_EXCHANGES, null, exchangeContent);
-            }
-
-
-            int ret = db.update(DbSchema.Chart.TABLE_COINS, coinContent, DbSchema.Chart.Coin.KEY_COIN_NAME + "= ?", new String[]{coin.getName()});
-            if (ret == 1) {
-                db.update(DbSchema.Chart.TABLE_EXCHANGES, exchangeContent, DbSchema.Chart.Coin.KEY_COIN_NAME + "= ?", new String[]{coin.getName()});
+                exchangeContent.put(DbSchema.Chart.Exchange.KEY_EXCHANGE_FK_COIN, coinId);
+                db.insertOrThrow(DbSchema.Chart.TABLE_EXCHANGES, null, exchangeContent);
                 db.setTransactionSuccessful();
             } else {
-                userId = db.insertOrThrow(DbSchema.Chart.TABLE_COINS, null, coinContent);
+                int ret = db.update(DbSchema.Chart.TABLE_EXCHANGES, exchangeContent, DbSchema.Chart.Exchange.KEY_EXCHANGE_NAME + "=? AND " +
+                        DbSchema.Chart.Exchange.KEY_EXCHANGE_FK_COIN + "=?", new String[]{coin.getExchange(), Long.toString(coinId)});
+                if (ret > 0) {
+                    db.setTransactionSuccessful();
+                } else {
+                    exchangeContent.put(DbSchema.Chart.Exchange.KEY_EXCHANGE_FK_COIN, coinId);
+                    userId = db.insertOrThrow(DbSchema.Chart.TABLE_EXCHANGES, null, exchangeContent);
 
-
-
-                userId = db.insertOrThrow(DbSchema.Chart.TABLE_EXCHANGES, null, exchangeContent);
-                db.setTransactionSuccessful();
+                    db.setTransactionSuccessful();
+                }
             }
         } catch (Exception e) {
-            Log.d(TAG, "Error while trying to add or update user");
+            Log.e(TAG, "Error while trying to add or update user");
         } finally {
             db.endTransaction();
         }
-        return userId;
-    }
 
-    public long addOrUpdateExchange(CoinData coin, long id) {
-        // The database connection is cached so it's not expensive to call getWriteableDatabase() multiple times.
-        SQLiteDatabase db = getWritableDatabase();
-        long userId = -1;
-
-        db.beginTransaction();
-        try {
-            ContentValues exchangeContent = new ContentValues();
-            exchangeContent.put(DbSchema.Chart.Exchange.KEY_EXCHANGE_NAME, coin.getExchange());
-            exchangeContent.put(DbSchema.Chart.Exchange.KEY_EXCHANGE_PRICE, coin.getPrice());
-            exchangeContent.put(DbSchema.Chart.Exchange.KEY_EXCHANGE_DIFF_PERCENT, coin.getDiffPercent());
-            exchangeContent.put(DbSchema.Chart.Exchange.KEY_EXCHANGE_PREMIUM, coin.getPremium());
-            exchangeContent.put(DbSchema.Chart.Exchange.KEY_EXCHANGE_CURRENCY_UNIT, coin.getCurrencyUnit());
-
-            int rows = db.update(DbSchema.Chart.TABLE_EXCHANGES, exchangeContent, DbSchema.Chart.Exchange.KEY_EXCHANGE_FK_COIN + "= ? AND " + DbSchema.Chart.Exchange.KEY_EXCHANGE_NAME + "=? ", new String[]{Long.toString(id), coin.getExchange()});
-            if (rows != 1) {
-                userId = db.insertOrThrow(DbSchema.Chart.TABLE_EXCHANGES, null, exchangeContent);
-                db.setTransactionSuccessful();
-            } else {
-                db.setTransactionSuccessful();
-            }
-        } catch (Exception e) {
-            Log.d(TAG, "Error while trying to add or update user");
-        } finally {
-            db.endTransaction();
-        }
         return userId;
     }
 
@@ -141,5 +105,40 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         } finally {
             db.endTransaction();
         }
+    }
+
+    private long getCoinPrimaryId(CoinData coin) {
+        long rv = -1;
+
+        SQLiteDatabase db = getReadableDatabase();
+        String[] columns = new String[] {
+                DbSchema.Chart.Coin.KEY_COIN_ID
+        };
+
+        String whereclause = DbSchema.Chart.Coin.KEY_COIN_NAME + "=? AND" +
+                DbSchema.Chart.Coin.KEY_COIN_ABB_NAME + "=?";
+
+        String[] whereargs = new String[] {
+                coin.getName(),
+                coin.getAbbName()
+        };
+
+        try {
+            Cursor cursor = db.query(DbSchema.Chart.TABLE_COINS, columns, whereclause, whereargs, null, null, null);
+
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                rv = cursor.getLong(cursor.getColumnIndex(DbSchema.Chart.Coin.KEY_COIN_ID));
+            }
+
+            cursor.close();
+            db.close();
+
+        } catch (Exception e) {
+            Log.e(TAG, "Error while trying to getCoinPrimaryId");
+
+        }
+
+        return rv;
     }
 }
