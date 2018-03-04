@@ -4,8 +4,8 @@ import android.content.Context;
 import android.content.res.Resources;
 
 
-import com.gazua.ddeokrok.coinman.model.CoinData;
-import com.gazua.ddeokrok.coinman.model.CoinInfo;
+import com.gazua.ddeokrok.coinman.data.CoinData;
+import com.gazua.ddeokrok.coinman.data.CoinInfo;
 
 import java.util.ArrayList;
 import java.util.Random;
