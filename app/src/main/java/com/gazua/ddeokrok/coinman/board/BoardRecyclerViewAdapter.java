@@ -43,7 +43,6 @@ public class BoardRecyclerViewAdapter extends RecyclerView.Adapter<BoardRecycler
             intent.putExtra("url", data.getLinkUrl());
             holder.itemView.getContext().startActivity(intent);
         });
-
     }
 
     @Override
