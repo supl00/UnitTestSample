@@ -1,11 +1,13 @@
 package com.gazua.ddeokrok.coinman.board;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +26,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -41,6 +45,7 @@ public class BoardFragment extends Fragment {
     private static final String TAG = "BoardFragment";
     private static final String URI_STRING = "https://m.clien.net/service/board/cm_vcoin";
 
+    private int mPageCount = 0;
     private RecyclerView boardRecyclerView;
     private final List<BoardData> boardDataList = new ArrayList<>();
 
@@ -57,22 +62,42 @@ public class BoardFragment extends Fragment {
         this.boardRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         this.boardRecyclerView.setAdapter(new BoardRecyclerViewAdapter(this.boardDataList));
         this.boardRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
+        this.boardRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (!isLoading && isMaxScrollReached(recyclerView)) {
+                    loadPage(++mPageCount);
+                }
+            }
 
+            private boolean isMaxScrollReached(RecyclerView recyclerView) {
+                int maxScroll = recyclerView.computeVerticalScrollRange();
+                int currentScroll = recyclerView.computeVerticalScrollOffset() + recyclerView.computeVerticalScrollExtent();
+                return currentScroll >= maxScroll;
+            }
+        });
+        loadPage(mPageCount);
+        return view;
+    }
+
+    private boolean isLoading;
+
+    public void loadPage(int page) {
+        String baseUri = URI_STRING + "?&po=" + page;
+        Logger.d(TAG, " loadPage - uri : " + baseUri);
+        isLoading = true;
         PageService pageService = ApiUtils.getRpJsoupService();
-        Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("page", 1);
-        paramMap.put("title", "클리앙");
-        pageService.selectContentSubList(URI_STRING, paramMap).enqueue(new Callback<Page>() {
+        pageService.selectContentGetSubList(baseUri).enqueue(new Callback<Page>() {
             @Override
             public void onResponse(Call<Page> call, Response<Page> response) {
                 Logger.d(TAG, "res : " + response);
                 final RecyclerView recyclerView = boardRecyclerView;
-                final List<BoardData> list = boardDataList;
                 Observable.just(Optional.ofNullable(response.body()).orElse(Page.EMPTY_PAGE).getContent())
-                        .filter(s -> !s.isEmpty())
+                        .filter(Objects::nonNull)
                         .map(Jsoup::parse)
                         .map(document -> document.select("div.list_item"))
-                        .flatMap(elements -> Observable.range(0, elements.size() - 1).map(elements::get))
+                        .flatMap(Observable::fromIterable)
                         .map(elements -> BoardData.asData(elements.select(".list_title .list_subject > span ")
                                         .stream()
                                         .filter(element -> element.hasAttr("data-role"))
@@ -89,12 +114,24 @@ public class BoardFragment extends Fragment {
                         .doOnTerminate(() -> {
                             recyclerView.getAdapter().notifyDataSetChanged();
                             Logger.d(TAG, "doOnComplete");
+                            isLoading = false;
                         })
                         .observeOn(Schedulers.io())
                         .forEach(data -> {
                             Logger.d(TAG, "data : " + data.toString());
-                            list.add(data);
+                            boardDataList.add(data);
                         });
+            }
+
+            @Override
+            public void onFailure(Call<Page> call, Throwable t) {
+                Logger.d(TAG, "fail : " + t);
+                isLoading = false;
+            }
+        });
+    }
+
+
 //                TextView text = getView().findViewById(R.id.response);
 //                text.setText(Html.fromHtml(response.body().getContent(), Html.FROM_HTML_MODE_LEGACY));
 //                while (true) {
@@ -185,14 +222,4 @@ public class BoardFragment extends Fragment {
 //                        break label170;
 //                    }
 //                }
-            }
-
-            @Override
-            public void onFailure(Call<Page> call, Throwable t) {
-                Logger.d(TAG, "fail : " + t);
-            }
-        });
-
-        return view;
-    }
 }
