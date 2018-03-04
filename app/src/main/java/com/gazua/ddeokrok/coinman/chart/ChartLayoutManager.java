@@ -1,5 +1,10 @@
 package com.gazua.ddeokrok.coinman.chart;
 
+import android.database.Cursor;
+import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.CursorLoader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,16 +14,22 @@ import android.widget.TextView;
 
 import com.gazua.ddeokrok.coinman.R;
 import com.gazua.ddeokrok.coinman.data.CoinData;
+import com.gazua.ddeokrok.coinman.data.DatabaseHelper;
 import com.gazua.ddeokrok.coinman.view.ReorderableLinearLayout;
 
 import java.util.ArrayList;
 
 
 public class ChartLayoutManager {
+    private static final String TAG = "ChartLayoutManager";
+
     private ReorderableLinearLayout mCoinInfoContainer;
     private boolean mIsEditModeEnabled = true;
 
-    public ChartLayoutManager(View parent) {
+    public ChartLayoutManager() {
+    }
+
+    public void setParent(View parent) {
         mCoinInfoContainer = parent.findViewById(R.id.chart_container);
     }
 
@@ -48,6 +59,10 @@ public class ChartLayoutManager {
                 }
             }
         }
+    }
+
+    public void updateLayout(Cursor cursor) {
+
     }
 
     public boolean isEditModeEnabled() {
