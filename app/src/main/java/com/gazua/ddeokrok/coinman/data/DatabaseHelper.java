@@ -114,6 +114,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    public Cursor fetchAll() {
+        Cursor ret = null;
+        try {
+            SQLiteDatabase db = getReadableDatabase();
+            final String queryString = "SELECT * FROM " + DbSchema.Chart.TABLE_COINS + ", " + DbSchema.Chart.TABLE_EXCHANGES + " WHERE " +
+                    DbSchema.Chart.TABLE_COINS+"."+ DbSchema.Chart.Coin.KEY_COIN_ID + "=" + DbSchema.Chart.TABLE_EXCHANGES + "." + DbSchema.Chart.Exchange.KEY_EXCHANGE_FK_COIN;
+
+            ret = db.rawQuery(queryString, null);
+
+
+        } catch(Exception e) {
+            Log.e(TAG, "Error while trying to fetchAll()");
+        }
+
+        return ret;
+    }
+
     private long getCoinPrimaryId(CoinData coin) {
         Log.d(TAG, "getCoinPrimaryId()");
         long rv = -1;

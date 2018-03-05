@@ -1,5 +1,8 @@
 package com.gazua.ddeokrok.coinman.chart;
 
+import android.app.LoaderManager;
+import android.content.Loader;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -37,25 +40,11 @@ public class ChartFragment extends Fragment {
 
     private ReorderableLinearLayout mContainer;
 
-    ChartLayoutManager mLayoutManager;
+    ChartManager mChartManager;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-    }
-
-    public void setEnableEditMode(boolean enabled) {
-        if (mLayoutManager != null) {
-            mLayoutManager.setEnableEditMode(enabled);
-        }
-    }
-
-    public boolean isEditModeEnabled() {
-        if (mLayoutManager != null) {
-            return mLayoutManager.isEditModeEnabled();
-        }
-
-        return false;
     }
 
     @Nullable
@@ -63,18 +52,9 @@ public class ChartFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_chart_main, null);
 
-        mLayoutManager = new ChartLayoutManager(view);
+        mChartManager = new ChartManager(view);
 
         mContainer = view.findViewById(R.id.chart_container);
-
-        Observable.range(0, CoinGenerator.MAX_COIN_COUNT)
-                .subscribeOn(Schedulers.io())
-                .map(integer -> CoinGenerator.getCoinSampleData(integer, view.getResources(), view.getContext()))
-                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(coinData -> mLayoutManager.addCoin(mLayoutManager.addCoinList(coinData)));
-                .subscribe(coinData -> mLayoutManager.addCoinList(coinData));
-
-        initTestLayout(view);
 
 //        PageService pageService = ApiUtils.getRpJsoupService();
 //
@@ -199,6 +179,8 @@ public class ChartFragment extends Fragment {
 //            }
 //        });
 
+
+
         return view;
     }
 
@@ -269,45 +251,4 @@ public class ChartFragment extends Fragment {
 //            }
 //        }
 //    }
-
-    private void initTestLayout(View v) {
-        Button refreshButton = v.findViewById(R.id.chart_test_refresh);
-        refreshButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getActivity(), "Refresh", Toast.LENGTH_LONG).show();
-
-                Observable.range(0, CoinGenerator.MAX_COIN_COUNT)
-                        .subscribeOn(Schedulers.io())
-                        .map(integer -> CoinGenerator.getCoinSampleData(integer, getResources(), getContext()))
-                        .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(coinData -> mLayoutManager.addCoin(mLayoutManager.addCoinList(coinData)));
-                        .subscribe(coinData -> addCoinList(coinData));
-
-            }
-        });
-
-        Button editButton = v.findViewById(R.id.chart_test_edit);
-        editButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getActivity(), "Edit", Toast.LENGTH_LONG).show();
-            }
-        });
-
-        Button deleteAllButton = v.findViewById(R.id.chart_test_delete_all);
-        deleteAllButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getActivity(), "Delete All", Toast.LENGTH_LONG).show();
-            }
-        });
-    }
-
-    private void addCoinList(ArrayList<CoinData> coinLists) {
-        DatabaseHelper dbHelper = DatabaseHelper.getInstance(getContext());
-        for (CoinData coin : coinLists) {
-            dbHelper.addOrUpdateCoinData(coin);
-        }
-    }
 }
