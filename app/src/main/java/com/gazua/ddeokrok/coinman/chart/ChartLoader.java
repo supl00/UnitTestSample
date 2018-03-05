@@ -32,10 +32,9 @@ public class ChartLoader {
     public void refresh() {
         Observable.range(0, CoinGenerator.MAX_COIN_COUNT)
                 .subscribeOn(Schedulers.io())
-                .map(integer -> CoinGenerator.getCoinSampleData(integer, mContext.getResources(), mContext))
+                .map(integer -> CoinGenerator.getCoinSampleData(integer))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(coinData -> addCoinList(coinData));
-
     }
 
     private void addCoinList(ArrayList<CoinData> coinLists) {

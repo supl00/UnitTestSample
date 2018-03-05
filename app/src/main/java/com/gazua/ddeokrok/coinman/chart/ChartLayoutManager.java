@@ -103,8 +103,8 @@ public class ChartLayoutManager {
                     TextView diffView = coinInfo.findViewById(R.id.chart_coin_content_diff_percent);
                     diffView.setText(String.format("%.2f", Float.parseFloat(cursor.getString(cursor.getColumnIndex(DbSchema.Chart.Exchange.KEY_EXCHANGE_DIFF_PERCENT)))) + "%");
 
-                    //ImageView iconView = coinInfo.findViewById(R.id.chart_coin_content_icon);
-                    //iconView.setImageResource(resId);
+                    ImageView iconView = coinInfo.findViewById(R.id.chart_coin_content_icon);
+                    iconView.setImageResource(cursor.getInt(cursor.getColumnIndex(DbSchema.Chart.Coin.KEY_COIN_ICON)));
 
                     TextView nameView = coinInfo.findViewById(R.id.chart_coin_content_name);
                     nameView.setText(coinName);

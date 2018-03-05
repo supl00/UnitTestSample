@@ -14,7 +14,7 @@ public class CoinData {
     private float mPremium = 0.0f;
     private String mCurrencyUnit = "KRW";
 
-    private Drawable mDrawable;
+    private int mIconResId;
 
     public CoinData(String coinName, String exchange) {
         mUniqueName = coinName + exchange;
@@ -80,11 +80,11 @@ public class CoinData {
         return mPremium;
     }
 
-    public void setDrawable(Drawable icon) {
-        mDrawable = icon;
+    public void setIconResId(int resId) {
+        mIconResId = resId;
     }
 
-    public Drawable getDrawable() {
-        return mDrawable;
+    public int getIconResId() {
+        return mIconResId;
     }
 }

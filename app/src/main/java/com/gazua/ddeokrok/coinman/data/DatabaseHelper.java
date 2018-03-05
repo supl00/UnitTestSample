@@ -64,6 +64,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             ContentValues coinContent = new ContentValues();
             coinContent.put(DbSchema.Chart.Coin.KEY_COIN_NAME, coin.getName());
             coinContent.put(DbSchema.Chart.Coin.KEY_COIN_ABB_NAME, coin.getAbbName());
+            coinContent.put(DbSchema.Chart.Coin.KEY_COIN_ICON, coin.getIconResId());
 
             ContentValues exchangeContent = new ContentValues();
             exchangeContent.put(DbSchema.Chart.Exchange.KEY_EXCHANGE_NAME, coin.getExchange());
