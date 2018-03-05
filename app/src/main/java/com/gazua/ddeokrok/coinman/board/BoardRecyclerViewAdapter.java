@@ -1,7 +1,6 @@
 package com.gazua.ddeokrok.coinman.board;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -55,22 +54,22 @@ public class BoardRecyclerViewAdapter extends RecyclerView.Adapter<BoardRecycler
         TextView userName;
         ImageView userImage;
         TextView count;
-        TextView date;
+        TextView time;
 
         BoardViewHoler(View itemView) {
             super(itemView);
             this.title = itemView.findViewById(R.id.title);
-            this.userName = itemView.findViewById(R.id.userName);
-            this.userImage = itemView.findViewById(R.id.userImage);
+            this.userName = itemView.findViewById(R.id.writer);
+            this.userImage = itemView.findViewById(R.id.icon_profile);
             this.count = itemView.findViewById(R.id.count);
-            this.date = itemView.findViewById(R.id.date);
+            this.time = itemView.findViewById(R.id.time);
         }
 
         void update(@NonNull BoardData data) {
             this.title.setText(data.getTitle());
             this.userName.setText(data.getUserName());
             this.count.setText(data.getCount());
-            this.date.setText(data.getDate());
+            this.time.setText(data.getDate());
         }
 
         void setOnItemClickListener(View.OnClickListener listener) {

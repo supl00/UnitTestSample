@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -47,6 +49,7 @@ public class BoardFragment extends Fragment {
 
     private int mPageCount = 0;
     private RecyclerView boardRecyclerView;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private final List<BoardData> boardDataList = new ArrayList<>();
 
     @Override
@@ -58,15 +61,20 @@ public class BoardFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_board_main, null);
-        this.boardRecyclerView = view.findViewById(R.id.board_recycler_view);
+        this.boardRecyclerView = view.findViewById(R.id.recycler_view); swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            loadPage(mPageCount = 0);
+        });
+
         this.boardRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        this.boardRecyclerView.setItemAnimator(new DefaultItemAnimator());
         this.boardRecyclerView.setAdapter(new BoardRecyclerViewAdapter(this.boardDataList));
-        this.boardRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
+        this.boardRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
         this.boardRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                if (!isLoading && isMaxScrollReached(recyclerView)) {
+                if (!swipeRefreshLayout.isRefreshing() && isMaxScrollReached(recyclerView)) {
                     loadPage(++mPageCount);
                 }
             }
@@ -77,16 +85,15 @@ public class BoardFragment extends Fragment {
                 return currentScroll >= maxScroll;
             }
         });
-        loadPage(mPageCount);
+        swipeRefreshLayout.post(() -> loadPage(mPageCount));
         return view;
     }
 
-    private boolean isLoading;
-
     public void loadPage(int page) {
+        swipeRefreshLayout.setRefreshing(true);
+
         String baseUri = URI_STRING + "?&po=" + page;
         Logger.d(TAG, " loadPage - uri : " + baseUri);
-        isLoading = true;
         PageService pageService = ApiUtils.getRpJsoupService();
         pageService.selectContentGetSubList(baseUri).enqueue(new Callback<Page>() {
             @Override
@@ -114,7 +121,7 @@ public class BoardFragment extends Fragment {
                         .doOnTerminate(() -> {
                             recyclerView.getAdapter().notifyDataSetChanged();
                             Logger.d(TAG, "doOnComplete");
-                            isLoading = false;
+                            swipeRefreshLayout.setRefreshing(false);
                         })
                         .observeOn(Schedulers.io())
                         .forEach(data -> {
@@ -126,7 +133,7 @@ public class BoardFragment extends Fragment {
             @Override
             public void onFailure(Call<Page> call, Throwable t) {
                 Logger.d(TAG, "fail : " + t);
-                isLoading = false;
+                swipeRefreshLayout.setRefreshing(false);
             }
         });
     }
