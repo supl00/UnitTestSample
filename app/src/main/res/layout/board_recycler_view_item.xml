@@ -7,8 +7,8 @@
     android:focusable="true"
     android:orientation="vertical"
     android:paddingBottom="@dimen/padding_list_row"
-    android:paddingStart="?listPreferredItemPaddingLeft"
     android:paddingEnd="?listPreferredItemPaddingRight"
+    android:paddingStart="?listPreferredItemPaddingLeft"
     android:paddingTop="@dimen/padding_list_row">
 
     <RelativeLayout
@@ -54,7 +54,7 @@
             <ImageView
                 android:id="@+id/icon"
                 android:layout_width="@dimen/board_icon_size"
-                android:layout_height="@dimen/board_icon_size"/>
+                android:layout_height="@dimen/board_icon_size" />
 
         </RelativeLayout>
 
@@ -81,7 +81,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/board_info_count_margin_top"
-            android:textColor="@color/writer"
+            android:background="@drawable/badge_background"
+            android:textColor="@color/count"
             android:textSize="@dimen/board_time"
             android:textStyle="bold" />
 
@@ -115,7 +116,7 @@
                 android:id="@+id/user_image"
                 android:layout_width="80dp"
                 android:layout_height="18dp"
-                android:scaleType="fitXY"/>
+                android:scaleType="fitXY" />
         </RelativeLayout>
 
         <TextView
