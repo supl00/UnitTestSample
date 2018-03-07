@@ -63,6 +63,7 @@ public class BoardFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_board_main, null);
         this.boardRecyclerView = view.findViewById(R.id.recycler_view); swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
         swipeRefreshLayout.setOnRefreshListener(() -> {
+            boardDataList.clear();
             loadPage(mPageCount = 0);
         });
 
@@ -82,7 +83,7 @@ public class BoardFragment extends Fragment {
             private boolean isMaxScrollReached(RecyclerView recyclerView) {
                 int maxScroll = recyclerView.computeVerticalScrollRange();
                 int currentScroll = recyclerView.computeVerticalScrollOffset() + recyclerView.computeVerticalScrollExtent();
-                return currentScroll >= maxScroll;
+                return currentScroll >= maxScroll * 0.7f;
             }
         });
         swipeRefreshLayout.post(() -> loadPage(mPageCount));
@@ -105,12 +106,13 @@ public class BoardFragment extends Fragment {
                         .map(Jsoup::parse)
                         .map(document -> document.select("div.list_item"))
                         .flatMap(Observable::fromIterable)
-                        .map(elements -> BoardData.asData(elements.select(".list_title .list_subject > span ")
-                                        .stream()
+                        .map(elements -> BoardData.asData(
+                                Observable.fromIterable(elements.select(".list_title .list_subject > span "))
                                         .filter(element -> element.hasAttr("data-role"))
+                                        .singleElement()
+                                        .doOnError(throwable -> Logger.e(TAG, "message : " + throwable.getMessage()))
                                         .map(Element::html)
-                                        .findFirst()
-                                        .orElse(""),
+                                        .blockingGet(""),
                                 elements.select(".list_time > span").html(),
                                 elements.select(".list_hit > span").html(),
                                 "https://m.clien.net/" + elements.select("a").attr("href"),

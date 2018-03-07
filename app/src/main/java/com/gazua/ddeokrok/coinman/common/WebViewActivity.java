@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.Window;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -20,6 +21,17 @@ public class WebViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         mWebView = new WebView(this);
+        WebSettings settings = this.mWebView.getSettings();
+        settings.setJavaScriptEnabled(true);
+        settings.setUseWideViewPort(true);
+        settings.setLoadWithOverviewMode(true);
+        settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+        settings.setDomStorageEnabled(true);
+        settings.setAllowContentAccess(true);
+        settings.setSupportMultipleWindows(true);
+        settings.setSupportZoom(true);
+        settings.setBuiltInZoomControls(false);
+        mWebView.setScrollbarFadingEnabled(true);
         mWebView.loadUrl(getIntent().getStringExtra("url"));
         mWebView.setWebViewClient(new WebViewClient() {
             @Override

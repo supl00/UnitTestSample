@@ -7,8 +7,8 @@
     android:focusable="true"
     android:orientation="vertical"
     android:paddingBottom="@dimen/padding_list_row"
-    android:paddingLeft="?listPreferredItemPaddingLeft"
-    android:paddingRight="?listPreferredItemPaddingRight"
+    android:paddingEnd="?listPreferredItemPaddingRight"
+    android:paddingStart="?listPreferredItemPaddingLeft"
     android:paddingTop="@dimen/padding_list_row">
 
     <RelativeLayout
@@ -43,11 +43,6 @@
             android:fillAfter="false"
             android:fillEnabled="false">
 
-            <ImageView
-                android:id="@+id/icon_profile"
-                android:layout_width="@dimen/board_icon_size"
-                android:layout_height="@dimen/board_icon_size" />
-
             <TextView
                 android:id="@+id/icon_text"
                 android:layout_width="wrap_content"
@@ -55,6 +50,12 @@
                 android:layout_centerInParent="true"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/board_profile_text" />
+
+            <ImageView
+                android:id="@+id/icon"
+                android:layout_width="@dimen/board_icon_size"
+                android:layout_height="@dimen/board_icon_size" />
+
         </RelativeLayout>
 
     </RelativeLayout>
@@ -64,8 +65,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:orientation="vertical"
-        android:gravity="center">
+        android:gravity="center"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/time"
@@ -80,7 +81,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/board_info_count_margin_top"
-            android:textColor="@color/writer"
+            android:background="@drawable/badge_background"
+            android:textColor="@color/count"
             android:textSize="@dimen/board_time"
             android:textStyle="bold" />
 
@@ -90,21 +92,32 @@
         android:id="@+id/board_content_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginStart="@dimen/board_content_side_margin"
         android:layout_marginEnd="@dimen/board_content_side_margin"
+        android:layout_marginStart="@dimen/board_content_side_margin"
         android:layout_toEndOf="@+id/profile_container"
-        android:layout_toStartOf="@+id/item_info_container">
+        android:layout_toStartOf="@+id/item_info_container"
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/writer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:lines="1"
-            android:textColor="@color/writer"
-            android:textSize="@dimen/board_writer"
-            android:textStyle="bold" />
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/writer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:lines="1"
+                android:textColor="@color/writer"
+                android:textSize="@dimen/board_writer"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/user_image"
+                android:layout_width="80dp"
+                android:layout_height="18dp"
+                android:scaleType="fitXY" />
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/title"
