@@ -1,9 +1,5 @@
 package com.gazua.ddeokrok.coinman.data;
 
-import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.drawable.Drawable;
-
 import com.gazua.ddeokrok.coinman.R;
 
 
@@ -111,21 +107,6 @@ public class CoinInfo {
         }
     }
 
-
-    public static final int BTC_ID = 100;
-    public static final int ETH_ID = 200;
-    public static final int DASH_ID = 300;
-    public static final int LTC_ID = 400;
-    public static final int ETC_ID = 500;
-    public static final int XRP_ID = 600;
-    public static final int BCH_ID = 700;
-    public static final int XMR_ID = 800;
-    public static final int QTUM_ID = 900;
-    public static final int ZEC_ID = 1000;
-    public static final int BTG_ID = 1100;
-    public static final int EOS_ID = 1200;
-
-
     public enum COIN {
         BTC {
             @Override
@@ -139,16 +120,8 @@ public class CoinInfo {
             }
 
             @Override
-            public Drawable getIcon(Resources res, Context context) {
-                if (res == null || context == null) {
-                    return null;
-                }
-                return res.getDrawable(R.drawable.btc2, context.getTheme());
-            }
-
-            @Override
-            public int getCoinId() {
-                return BTC_ID;
+            public int getIconResId() {
+                return R.drawable.btc2;
             }
         },
         ETH {
@@ -163,16 +136,8 @@ public class CoinInfo {
             }
 
             @Override
-            public Drawable getIcon(Resources res, Context context) {
-                if (res == null || context == null) {
-                    return null;
-                }
-                return res.getDrawable(R.drawable.eth2, context.getTheme());
-            }
-
-            @Override
-            public int getCoinId() {
-                return ETH_ID;
+            public int getIconResId() {
+                return R.drawable.eth2;
             }
         },
         DASH {
@@ -187,16 +152,8 @@ public class CoinInfo {
             }
 
             @Override
-            public Drawable getIcon(Resources res, Context context) {
-                if (res == null || context == null) {
-                    return null;
-                }
-                return res.getDrawable(R.drawable.dash, context.getTheme());
-            }
-
-            @Override
-            public int getCoinId() {
-                return DASH_ID;
+            public int getIconResId() {
+                return R.drawable.dash;
             }
         },
         LTC {
@@ -211,16 +168,8 @@ public class CoinInfo {
             }
 
             @Override
-            public Drawable getIcon(Resources res, Context context) {
-                if (res == null || context == null) {
-                    return null;
-                }
-                return res.getDrawable(R.drawable.ltc, context.getTheme());
-            }
-
-            @Override
-            public int getCoinId() {
-                return LTC_ID;
+            public int getIconResId() {
+                return R.drawable.ltc;
             }
         },
         ETC {
@@ -235,16 +184,8 @@ public class CoinInfo {
             }
 
             @Override
-            public Drawable getIcon(Resources res, Context context) {
-                if (res == null || context == null) {
-                    return null;
-                }
-                return res.getDrawable(R.drawable.etc, context.getTheme());
-            }
-
-            @Override
-            public int getCoinId() {
-                return ETC_ID;
+            public int getIconResId() {
+                return R.drawable.etc;
             }
         },
         XRP {
@@ -259,16 +200,8 @@ public class CoinInfo {
             }
 
             @Override
-            public Drawable getIcon(Resources res, Context context) {
-                if (res == null || context == null) {
-                    return null;
-                }
-                return res.getDrawable(R.drawable.xrp, context.getTheme());
-            }
-
-            @Override
-            public int getCoinId() {
-                return XRP_ID;
+            public int getIconResId() {
+                return R.drawable.xrp;
             }
         },
         BCH {
@@ -283,16 +216,8 @@ public class CoinInfo {
             }
 
             @Override
-            public Drawable getIcon(Resources res, Context context) {
-                if (res == null || context == null) {
-                    return null;
-                }
-                return res.getDrawable(R.drawable.bch, context.getTheme());
-            }
-
-            @Override
-            public int getCoinId() {
-                return BCH_ID;
+            public int getIconResId() {
+                return R.drawable.bch;
             }
         },
         XMR {
@@ -307,16 +232,8 @@ public class CoinInfo {
             }
 
             @Override
-            public Drawable getIcon(Resources res, Context context) {
-                if (res == null || context == null) {
-                    return null;
-                }
-                return res.getDrawable(R.drawable.xmr, context.getTheme());
-            }
-
-            @Override
-            public int getCoinId() {
-                return XMR_ID;
+            public int getIconResId() {
+                return R.drawable.xmr;
             }
         },
         QTUM {
@@ -331,16 +248,8 @@ public class CoinInfo {
             }
 
             @Override
-            public Drawable getIcon(Resources res, Context context) {
-                if (res == null || context == null) {
-                    return null;
-                }
-                return res.getDrawable(R.drawable.qtum, context.getTheme());
-            }
-
-            @Override
-            public int getCoinId() {
-                return QTUM_ID;
+            public int getIconResId() {
+                return R.drawable.qtum;
             }
         },
         ZEC {
@@ -355,16 +264,8 @@ public class CoinInfo {
             }
 
             @Override
-            public Drawable getIcon(Resources res, Context context) {
-                if (res == null || context == null) {
-                    return null;
-                }
-                return res.getDrawable(R.drawable.zec, context.getTheme());
-            }
-
-            @Override
-            public int getCoinId() {
-                return ZEC_ID;
+            public int getIconResId() {
+                return R.drawable.zec;
             }
         },
         BTG {
@@ -379,16 +280,8 @@ public class CoinInfo {
             }
 
             @Override
-            public Drawable getIcon(Resources res, Context context) {
-                if (res == null || context == null) {
-                    return null;
-                }
-                return res.getDrawable(R.drawable.btg, context.getTheme());
-            }
-
-            @Override
-            public int getCoinId() {
-                return BTG_ID;
+            public int getIconResId() {
+                return R.drawable.btg;
             }
         },
         EOS {
@@ -403,23 +296,14 @@ public class CoinInfo {
             }
 
             @Override
-            public Drawable getIcon(Resources res, Context context) {
-                if (res == null || context == null) {
-                    return null;
-                }
-                return res.getDrawable(R.drawable.eos, context.getTheme());
-            }
-
-            @Override
-            public int getCoinId() {
-                return EOS_ID;
+            public int getIconResId() {
+                return R.drawable.eos;
             }
         };
 
         public abstract String getName();
         public abstract String getAbbName();
-        public abstract Drawable getIcon(Resources res, Context context);
-        public abstract int getCoinId();
+        public abstract int getIconResId();
 
         static COIN fromName(String name) {
             for (COIN coin : values()) {

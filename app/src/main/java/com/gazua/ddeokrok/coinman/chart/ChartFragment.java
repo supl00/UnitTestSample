@@ -1,28 +1,15 @@
 package com.gazua.ddeokrok.coinman.chart;
 
-import android.app.LoaderManager;
-import android.content.Loader;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.Toast;
+
 
 import com.gazua.ddeokrok.coinman.R;
-import com.gazua.ddeokrok.coinman.data.CoinData;
-import com.gazua.ddeokrok.coinman.data.DatabaseHelper;
-import com.gazua.ddeokrok.coinman.util.CoinGenerator;
 import com.gazua.ddeokrok.coinman.view.ReorderableLinearLayout;
-
-import java.util.ArrayList;
-
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 
 
 public class ChartFragment extends Fragment {

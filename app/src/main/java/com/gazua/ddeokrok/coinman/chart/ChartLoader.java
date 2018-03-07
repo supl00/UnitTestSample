@@ -18,7 +18,7 @@ public class ChartLoader {
     private LoaderListener mListener;
 
     public interface LoaderListener {
-        public void onUpdate(Cursor cursor);
+        void onUpdate(Cursor cursor);
     }
 
     public ChartLoader(Context context) {
@@ -32,10 +32,9 @@ public class ChartLoader {
     public void refresh() {
         Observable.range(0, CoinGenerator.MAX_COIN_COUNT)
                 .subscribeOn(Schedulers.io())
-                .map(integer -> CoinGenerator.getCoinSampleData(integer, mContext.getResources(), mContext))
+                .map(integer -> CoinGenerator.getCoinSampleData(integer))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(coinData -> addCoinList(coinData));
-
     }
 
     private void addCoinList(ArrayList<CoinData> coinLists) {
@@ -44,7 +43,6 @@ public class ChartLoader {
             dbHelper.addOrUpdateCoinData(coin);
         }
         Cursor cursor = dbHelper.fetchAll();
-        int count = cursor.getColumnCount();
 
         if (mListener != null) {
             mListener.onUpdate(cursor);

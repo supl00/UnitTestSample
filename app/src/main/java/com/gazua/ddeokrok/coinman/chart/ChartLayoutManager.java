@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.gazua.ddeokrok.coinman.R;
 import com.gazua.ddeokrok.coinman.data.CoinData;
 import com.gazua.ddeokrok.coinman.data.DatabaseHelper;
+import com.gazua.ddeokrok.coinman.data.DbSchema;
 import com.gazua.ddeokrok.coinman.view.ReorderableLinearLayout;
 
 import java.util.ArrayList;
@@ -61,61 +62,90 @@ public class ChartLayoutManager {
         }
     }
 
-    public void updateLayout(Cursor cursor) {
-
-    }
-
     public boolean isEditModeEnabled() {
         return mIsEditModeEnabled;
     }
 
-    public ViewGroup addCoinList(ArrayList<CoinData> list) {
-        LayoutInflater inflater = LayoutInflater.from(mCoinInfoContainer.getContext());
-        LinearLayout coinInfo = (LinearLayout) inflater.inflate(R.layout.chart_coin_content, null, false);
-        TextView abbName = coinInfo.findViewById(R.id.chart_coin_content_abb_name);
-        abbName.setText(list.get(0).getAbbName());
-
-        TextView diffView = coinInfo.findViewById(R.id.chart_coin_content_diff_percent);
-        diffView.setText(String.format("%.2f", list.get(0).getDiffPercent()) + "%");
-
-        ImageView iconView = coinInfo.findViewById(R.id.chart_coin_content_icon);
-        iconView.setImageDrawable(list.get(0).getDrawable());
-
-        TextView coinFullNameView = coinInfo.findViewById(R.id.chart_coin_content_name);
-        coinFullNameView.setText(list.get(0).getName());
-
-        mCoinInfoContainer.addView(coinInfo);
-        mCoinInfoContainer.setViewDraggable(coinInfo, coinInfo.findViewById(R.id.chart_coin_content_drag));
-
-        ReorderableLinearLayout coinDetailContainer = coinInfo.findViewById(R.id.chart_coin_content_detail_container);
-        int detailCount = list.size();
-        for (int i = 0; i < detailCount; i++) {
-            LinearLayout coinDetailLayout = (LinearLayout) inflater.inflate(R.layout.chart_coin_detail, null, false);
-            CoinData data = list.get(i);
-
-            TextView exchangeView = coinDetailLayout.findViewById(R.id.chart_coin_detail_exchange_name);
-            exchangeView.setText(data.getExchange());
-
-            TextView diffPercentView = coinDetailLayout.findViewById(R.id.chart_coin_detail_diff_percent);
-            diffPercentView.setText(String.format("%.2f", data.getDiffPercent()) + "%");
-
-            TextView priceView = coinDetailLayout.findViewById(R.id.chart_coin_detail_price);
-            priceView.setText(String.valueOf(data.getPrice()));
-
-            TextView unitView = coinDetailLayout.findViewById(R.id.chart_coin_detail_currency_unit);
-            unitView.setText(data.getCurrencyUnit());
-
-            TextView premiumView = coinDetailLayout.findViewById(R.id.chart_coin_detail_premium);
-            premiumView.setText(String.format("%.2f", data.getPremium()) + "%");
-
-            if (i!= 0 && !mIsEditModeEnabled) {
-                coinDetailLayout.setVisibility(View.GONE);
-            }
-
-            coinDetailContainer.addView(coinDetailLayout);
-            coinDetailContainer.setViewDraggable(coinDetailLayout, coinDetailLayout.findViewById(R.id.chart_coin_detail_drag));
+    public void addOrUpdateLayout(Cursor cursor) {
+        if (mCoinInfoContainer == null) {
+            return;
         }
 
-        return coinInfo;
+        LayoutInflater inflater = LayoutInflater.from(mCoinInfoContainer.getContext());
+
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast()) {
+                String coinName = cursor.getString(cursor.getColumnIndex(DbSchema.Chart.Coin.KEY_COIN_NAME));
+                String exchange = cursor.getString(cursor.getColumnIndex(DbSchema.Chart.Exchange.KEY_EXCHANGE_NAME));
+
+                LinearLayout coinInfoLayout = mCoinInfoContainer.findViewWithTag(coinName);
+                if (coinInfoLayout != null) {
+
+
+                    LinearLayout coinDetailLayout = coinInfoLayout.findViewWithTag(exchange);
+                    if (coinDetailLayout != null) {
+                        updateDetailLayout(cursor, coinDetailLayout);
+                    } else {
+                        ReorderableLinearLayout coinDetailContainer = coinInfoLayout.findViewById(R.id.chart_coin_content_detail_container);
+                        coinDetailLayout = (LinearLayout) inflater.inflate(R.layout.chart_coin_detail, null, false);
+                        updateDetailLayout(cursor, coinDetailLayout);
+                        coinDetailLayout.setTag(exchange);
+
+                        coinDetailContainer.addView(coinDetailLayout);
+                        coinDetailContainer.setViewDraggable(coinDetailLayout, coinDetailLayout.findViewById(R.id.chart_coin_detail_drag));
+                    }
+                } else {
+                    LinearLayout coinInfo = (LinearLayout) inflater.inflate(R.layout.chart_coin_content, null, false);
+
+                    TextView abbName = coinInfo.findViewById(R.id.chart_coin_content_abb_name);
+                    abbName.setText(cursor.getString(cursor.getColumnIndex(DbSchema.Chart.Coin.KEY_COIN_ABB_NAME)));
+
+                    TextView diffView = coinInfo.findViewById(R.id.chart_coin_content_diff_percent);
+                    diffView.setText(String.format("%.2f", Float.parseFloat(cursor.getString(cursor.getColumnIndex(DbSchema.Chart.Exchange.KEY_EXCHANGE_DIFF_PERCENT)))) + "%");
+
+                    ImageView iconView = coinInfo.findViewById(R.id.chart_coin_content_icon);
+                    iconView.setImageResource(cursor.getInt(cursor.getColumnIndex(DbSchema.Chart.Coin.KEY_COIN_ICON)));
+
+                    TextView nameView = coinInfo.findViewById(R.id.chart_coin_content_name);
+                    nameView.setText(coinName);
+
+                    coinInfo.setTag(coinName);
+
+                    mCoinInfoContainer.addView(coinInfo);
+                    mCoinInfoContainer.setViewDraggable(coinInfo, coinInfo.findViewById(R.id.chart_coin_content_drag));
+
+                    ReorderableLinearLayout coinDetailContainer = coinInfo.findViewById(R.id.chart_coin_content_detail_container);
+
+                    LinearLayout coinDetailLayout = (LinearLayout) inflater.inflate(R.layout.chart_coin_detail, null, false);
+
+                    updateDetailLayout(cursor, coinDetailLayout);
+                    coinDetailLayout.setTag(exchange);
+
+                    coinDetailContainer.addView(coinDetailLayout);
+                    coinDetailContainer.setViewDraggable(coinDetailLayout, coinDetailLayout.findViewById(R.id.chart_coin_detail_drag));
+                }
+
+                cursor.moveToNext();
+            }
+        }
+
+    }
+
+    private void updateDetailLayout(Cursor cursor, ViewGroup parent) {
+        TextView exchangeView = parent.findViewById(R.id.chart_coin_detail_exchange_name);
+        exchangeView.setText(cursor.getString(cursor.getColumnIndex(DbSchema.Chart.Exchange.KEY_EXCHANGE_NAME)));
+
+        TextView diffPercentView = parent.findViewById(R.id.chart_coin_detail_diff_percent);
+        diffPercentView.setText(String.format("%.2f", Float.parseFloat(cursor.getString(cursor.getColumnIndex(DbSchema.Chart.Exchange.KEY_EXCHANGE_DIFF_PERCENT)))) + "%");
+
+        TextView priceView = parent.findViewById(R.id.chart_coin_detail_price);
+        priceView.setText(cursor.getString(cursor.getColumnIndex(DbSchema.Chart.Exchange.KEY_EXCHANGE_PRICE)));
+
+        TextView unitView = parent.findViewById(R.id.chart_coin_detail_currency_unit);
+        unitView.setText(cursor.getString(cursor.getColumnIndex(DbSchema.Chart.Exchange.KEY_EXCHANGE_CURRENCY_UNIT)));
+
+        TextView premiumView = parent.findViewById(R.id.chart_coin_detail_premium);
+        premiumView.setText(String.format("%.2f", Float.parseFloat(cursor.getString(cursor.getColumnIndex(DbSchema.Chart.Exchange.KEY_EXCHANGE_PREMIUM)))) + "%");
+
     }
 }

@@ -6,11 +6,6 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.gazua.ddeokrok.coinman.R;
-import com.gazua.ddeokrok.coinman.util.CoinGenerator;
-
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 
 public class ChartManager {
     private ChartLayoutManager mLayoutManager;
@@ -25,13 +20,7 @@ public class ChartManager {
         mLayoutManager.setParent(mRootLayout);
 
         mLoader = new ChartLoader(mRootLayout.getContext());
-        mLoader.setLoaderListener(cursor -> mLayoutManager.updateLayout(cursor));
-
-        Observable.range(0, CoinGenerator.MAX_COIN_COUNT)
-                .subscribeOn(Schedulers.io())
-                .map(integer -> CoinGenerator.getCoinSampleData(integer, mRootLayout.getResources(), mRootLayout.getContext()))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(coinData -> mLayoutManager.addCoinList(coinData));
+        mLoader.setLoaderListener(cursor -> mLayoutManager.addOrUpdateLayout(cursor));
 
         initTestLayout(rootLayout);
     }
