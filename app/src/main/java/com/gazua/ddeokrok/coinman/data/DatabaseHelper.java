@@ -76,6 +76,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             if (coinId == -1) {
                 coinId = db.insertOrThrow(DbSchema.Chart.TABLE_COINS, null, coinContent);
 
+                exchangeContent.put(DbSchema.Chart.Exchange.KEY_EXCHANGE_IS_MAIN_EXCHAGE, 1);
                 exchangeContent.put(DbSchema.Chart.Exchange.KEY_EXCHANGE_FK_COIN, coinId);
                 db.insertOrThrow(DbSchema.Chart.TABLE_EXCHANGES, null, exchangeContent);
                 db.setTransactionSuccessful();

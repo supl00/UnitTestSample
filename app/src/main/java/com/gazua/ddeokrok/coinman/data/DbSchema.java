@@ -23,6 +23,7 @@ public class DbSchema {
                 Exchange.KEY_EXCHANGE_DIFF_PERCENT + " TEXT NOT NULL, " +
                 Exchange.KEY_EXCHANGE_PREMIUM + " TEXT NOT NULL, " +
                 Exchange.KEY_EXCHANGE_CURRENCY_UNIT + " TEXT NOT NULL, " +
+                Exchange.KEY_EXCHANGE_IS_MAIN_EXCHAGE + " INTEGER NOT NULL DEFAULT 0, " +
                 Exchange.KEY_EXCHANGE_IS_VISIBLE + " INTEGER NOT NULL DEFAULT 1, " +
                 Exchange.KEY_EXCHANGE_FK_COIN + " INTEGER, " +
                 " FOREIGN KEY(" + Exchange.KEY_EXCHANGE_FK_COIN + ") REFERENCES " + TABLE_COINS + "(" + Coin.KEY_COIN_ID + ")" +
@@ -43,6 +44,7 @@ public class DbSchema {
             public static final String KEY_EXCHANGE_DIFF_PERCENT = "exchange_diff_percent";
             public static final String KEY_EXCHANGE_PREMIUM = "exchange_premium";
             public static final String KEY_EXCHANGE_CURRENCY_UNIT = "exchange_currency_unit";
+            public static final String KEY_EXCHANGE_IS_MAIN_EXCHAGE = "exchange_is_main_exchange";
             public static final String KEY_EXCHANGE_IS_VISIBLE = "exchange_is_visible";
             public static final String KEY_EXCHANGE_FK_COIN = "fk_coin";
         }

@@ -12,18 +12,35 @@
             android:layout_width="0dp"
             android:layout_height="60dp"
             android:layout_weight="1"
+            android:singleLine="true"
             android:text="Refresh"/>
+        <Button
+            android:id="@+id/chart_test_expand"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:singleLine="true"
+            android:text="Expand"/>
+        <Button
+            android:id="@+id/chart_test_collapse"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:singleLine="true"
+            android:text="Collapse"/>
         <Button
             android:id="@+id/chart_test_edit"
             android:layout_width="0dp"
             android:layout_height="60dp"
             android:layout_weight="1"
+            android:singleLine="true"
             android:text="Edit"/>
         <Button
             android:id="@+id/chart_test_delete_all"
             android:layout_width="0dp"
             android:layout_height="60dp"
             android:layout_weight="1"
+            android:singleLine="true"
             android:text="Delete All"/>
     </LinearLayout>
 
