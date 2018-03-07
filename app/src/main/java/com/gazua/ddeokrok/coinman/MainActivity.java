@@ -17,10 +17,14 @@ import android.view.View;
 
 import com.gazua.ddeokrok.coinman.board.BoardFragment;
 import com.gazua.ddeokrok.coinman.chart.ChartFragment;
+import com.gazua.ddeokrok.coinman.common.FabActionListener;
 import com.gazua.ddeokrok.coinman.information.InformationsFragment;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
+import io.reactivex.Maybe;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -55,14 +59,26 @@ public class MainActivity extends AppCompatActivity {
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), tabLayout);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        mViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+
+            }
+        });
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+                Maybe.just(mSectionsPagerAdapter.getItem(mViewPager.getCurrentItem()))
+                        .filter(Objects::nonNull)
+                        .filter(fragment -> fragment instanceof FabActionListener)
+                        .map(fragment -> (FabActionListener) fragment)
+                        .subscribe(fabActionListener -> fabActionListener.onClickFab(fab));
             }
         });
     }

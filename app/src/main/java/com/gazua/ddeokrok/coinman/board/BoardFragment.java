@@ -3,6 +3,7 @@ package com.gazua.ddeokrok.coinman.board;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -16,6 +17,7 @@ import android.view.ViewGroup;
 
 import com.gazua.ddeokrok.coinman.R;
 import com.gazua.ddeokrok.coinman.board.data.BoardData;
+import com.gazua.ddeokrok.coinman.common.FabActionListener;
 import com.gazua.ddeokrok.coinman.common.Logger;
 import com.gazua.ddeokrok.coinman.network.ApiUtils;
 import com.gazua.ddeokrok.coinman.network.PageService;
@@ -33,6 +35,7 @@ import java.util.Optional;
 import java.util.stream.IntStream;
 
 import io.reactivex.Observable;
+import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
@@ -43,7 +46,7 @@ import retrofit2.Response;
  * Created by kimju on 2018-02-15.
  */
 
-public class BoardFragment extends Fragment {
+public class BoardFragment extends Fragment implements FabActionListener {
     private static final String TAG = "BoardFragment";
     private static final String URI_STRING = "https://m.clien.net/service/board/cm_vcoin";
 
@@ -138,6 +141,18 @@ public class BoardFragment extends Fragment {
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
+    }
+
+    @Override
+    public void onClickFab(FloatingActionButton fab) {
+        Logger.d(TAG, "onClickFab, fab : " + fab);
+        final int startPosition = 30;
+        Single.just(((LinearLayoutManager)boardRecyclerView.getLayoutManager()).findFirstVisibleItemPosition())
+                .map(pos -> pos > startPosition ? startPosition : pos)
+                .subscribe(startPos -> {
+                    boardRecyclerView.scrollToPosition(startPos);
+                    boardRecyclerView.smoothScrollToPosition(0);
+                });
     }
 
 
