@@ -9,11 +9,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.gazua.ddeokrok.coinman.R;
 import com.gazua.ddeokrok.coinman.board.data.BoardData;
 import com.gazua.ddeokrok.coinman.common.WebViewActivity;
 
 import java.util.List;
+import java.util.Objects;
+
+import io.reactivex.Maybe;
 
 /**
  * Created by kimju on 2018-02-22.
@@ -60,7 +64,7 @@ public class BoardRecyclerViewAdapter extends RecyclerView.Adapter<BoardRecycler
             super(itemView);
             this.title = itemView.findViewById(R.id.title);
             this.userName = itemView.findViewById(R.id.writer);
-            this.userImage = itemView.findViewById(R.id.icon_profile);
+            this.userImage = itemView.findViewById(R.id.user_image);
             this.count = itemView.findViewById(R.id.count);
             this.time = itemView.findViewById(R.id.time);
         }
@@ -70,6 +74,11 @@ public class BoardRecyclerViewAdapter extends RecyclerView.Adapter<BoardRecycler
             this.userName.setText(data.getUserName());
             this.count.setText(data.getCount());
             this.time.setText(data.getDate());
+            this.userImage.setImageDrawable(null);
+
+            Maybe.just(data.getUserImage())
+                    .filter(Objects::nonNull)
+                    .subscribe(imageUri -> Glide.with(itemView.getContext()).load(imageUri).into(this.userImage));
         }
 
         void setOnItemClickListener(View.OnClickListener listener) {
