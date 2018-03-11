@@ -1,12 +1,17 @@
 package com.gazua.ddeokrok.coinman.board.url;
 
+import com.gazua.ddeokrok.coinman.common.Logger;
+
 import org.jsoup.nodes.Element;
+
+import io.reactivex.Observable;
 
 /**
  * Created by kimju on 2018-03-08.
  */
 
 public class BullpenServer extends BaseServer {
+    private static final String TAG = "BullpenServer";
     private static final String URI_BULLPEN = "http://mlbpark.donga.com/mp/b.php?m=search&b=bullpen&query=%EC%BD%94%EC%9D%B8&select=sct";
 
     @Override
@@ -16,17 +21,17 @@ public class BullpenServer extends BaseServer {
 
     @Override
     public String totalUrl() {
-        return null;
+        return baseUrl() + TAG_AND + pageTag();
     }
 
     @Override
     public String listTag() {
-        return null;
+        return "div.contents > ul.lists > li.items";
     }
 
     @Override
     public String pageTag() {
-        return null;
+        return "p=" + (this.currentPage * 30 + 1);
     }
 
     @Override
@@ -36,39 +41,37 @@ public class BullpenServer extends BaseServer {
 
     @Override
     public String parseTitle(Element elements) {
-        return null;
+        return elements.select(".title ").text();
     }
 
     @Override
     public String parseDate(Element elements) {
-        return null;
+        return elements.select(".date").html();
     }
 
     @Override
     public String parseHitsCount(Element elements) {
-        return null;
+//        return elements.select(".viewV").html();
+        return "0";
+    }
+
+    @Override
+    public String parseReplyCount(Element elements) {
+        return elements.select(".replycnt").text();
     }
 
     @Override
     public String parseLinkUrl(Element elements) {
-        return null;
+        return elements.select(".title > a").attr("href");
     }
 
     @Override
     public String parseUserNickname(Element elements) {
-        return null;
+        return elements.select(".nick").text();
     }
 
     @Override
     public String parseUserImage(Element elements) {
-        return null;
-    }
-
-    public static class Query {
-        public static final String PAGE = "p";
-
-        public static String page(String param) {
-            return String.format("&%s=%s", PAGE, param);
-        }
+        return null;//elements.select("img").attr("src");
     }
 }

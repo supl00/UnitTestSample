@@ -1,6 +1,7 @@
 package com.gazua.ddeokrok.coinman.board.url;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 
 import com.gazua.ddeokrok.coinman.board.data.BoardData;
 import com.gazua.ddeokrok.coinman.common.Logger;
@@ -70,9 +71,58 @@ public class UrlBuilder {
     public void query(@NonNull Consumer<? super List<BoardData>> onSuccess) {
         query(onSuccess, Functions.ERROR_CONSUMER);
     }
+
     public void query(@NonNull Consumer<? super List<BoardData>> onSuccess, @NonNull Consumer<? super Throwable> onError) {
         query(onSuccess, Functions.ERROR_CONSUMER, Functions.EMPTY_ACTION);
     }
+
+    @VisibleForTesting
+    public void queryTest(@NonNull Consumer<? super List<BoardData>> onSuccess, @NonNull Consumer<? super Throwable> onError, Action onTerminate) {
+        Logger.d(TAG, " query - base : " + baseUrl() + ", total : " + totalUrl());
+        PageService pageService = ApiUtils.getRpJsoupService();
+        pageService.selectContentGetSubList(totalUrl())
+                .enqueue(new Callback<Page>() {
+                             @Override
+                             public void onResponse(@NonNull Call<Page> call, @NonNull Response<Page> response) {
+                                 Logger.d(TAG, "res : " + response);
+                                 BaseServer.asBoardItems(baseServer, response.body().getContent())
+                                         .observeOn(AndroidSchedulers.mainThread())
+                                         .doOnError(throwable -> {
+                                             Logger.d(TAG, "onResponse, doOnError");
+                                             onError.accept(throwable);
+                                         })
+                                         .doOnComplete(() -> {
+                                             Logger.d(TAG, "onResponse, doOnComplete");
+                                             onSuccess.accept(null);
+                                         })
+                                         .doOnTerminate(() -> {
+                                             Logger.d(TAG, "onResponse, doOnTerminate");
+                                             onTerminate.run();
+                                         })
+                                         .forEach(element -> {
+                                             Logger.d(TAG, "title : " + element.select(".title ").text());
+                                             Logger.d(TAG, "date : " + element.select(".date").html());
+//                                             Logger.d(TAG, "hit : " + element.select(".viewV").html());
+                                             Logger.d(TAG, "href : " + element.select(".title > a").attr("href"));
+                                             Logger.d(TAG, "image : " + element.select("img").attr("src"));
+                                             Logger.d(TAG, "name : " + element.select(".nick").text());
+                                             Logger.d(TAG, "reply count : " + element.select(".replycnt").text());
+                                         });
+                             }
+
+                             @Override
+                             public void onFailure(Call<Page> call, Throwable t) {
+                                 Logger.d(TAG, "onFailure : " + t);
+                                 try {
+                                     onError.accept(t);
+                                     onTerminate.run();
+                                 } catch (Throwable e) {
+                                 }
+                             }
+                         }
+                );
+    }
+
     public void query(@NonNull Consumer<? super List<BoardData>> onSuccess, @NonNull Consumer<? super Throwable> onError, Action onTerminate) {
         Logger.d(TAG, " query - base : " + baseUrl() + ", total : " + totalUrl());
         PageService pageService = ApiUtils.getRpJsoupService();
@@ -94,7 +144,7 @@ public class UrlBuilder {
                                          })
                                          .doOnTerminate(() -> {
                                              Logger.d(TAG, "onResponse, doOnTerminate");
-                                            onTerminate.run();
+                                             onTerminate.run();
                                          })
                                          .forEach(data -> {
                                              Logger.d(TAG, "onResponse, data : " + data.toString());

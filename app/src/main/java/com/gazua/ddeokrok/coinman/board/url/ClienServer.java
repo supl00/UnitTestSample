@@ -60,6 +60,11 @@ public class ClienServer extends BaseServer {
     }
 
     @Override
+    public String parseReplyCount(Element elements) {
+        return elements.select(".list_reply > span").html();
+    }
+
+    @Override
     public String parseLinkUrl(Element elements) {
         return "https://m.clien.net/" + elements.select("a").attr("href");
     }

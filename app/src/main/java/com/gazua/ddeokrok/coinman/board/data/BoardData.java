@@ -1,5 +1,7 @@
 package com.gazua.ddeokrok.coinman.board.data;
 
+import android.text.TextUtils;
+
 /**
  * Created by kimju on 2018-02-22.
  */
@@ -15,7 +17,7 @@ public class BoardData {
     public BoardData(String title, String date, String count, String linkUrl, String userName, String userImage) {
         this.title = title;
         this.date = date;
-        this.count = count;
+        this.count = TextUtils.isEmpty(count) ? "0" : count;
         this.linkUrl = linkUrl;
         this.userName = userName;
         this.userImage = userImage;
