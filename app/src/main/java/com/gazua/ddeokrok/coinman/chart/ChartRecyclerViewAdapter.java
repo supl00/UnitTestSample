@@ -45,8 +45,7 @@ import com.gazua.ddeokrok.coinman.widget.advrecyclerview.utils.AbstractDraggable
 import com.gazua.ddeokrok.coinman.widget.advrecyclerview.utils.AbstractExpandableItemAdapter;
 import com.gazua.ddeokrok.coinman.widget.advrecyclerview.utils.RecyclerViewAdapterUtils;
 
-class ChartRecyclerViewAdapter
-        extends AbstractExpandableItemAdapter<ChartRecyclerViewAdapter.MyGroupViewHolder, ChartRecyclerViewAdapter.MyChildViewHolder>
+class ChartRecyclerViewAdapter extends AbstractExpandableItemAdapter<ChartRecyclerViewAdapter.MyGroupViewHolder, ChartRecyclerViewAdapter.MyChildViewHolder>
         implements ExpandableDraggableItemAdapter<ChartRecyclerViewAdapter.MyGroupViewHolder, ChartRecyclerViewAdapter.MyChildViewHolder>,
         ExpandableSwipeableItemAdapter<ChartRecyclerViewAdapter.MyGroupViewHolder, ChartRecyclerViewAdapter.MyChildViewHolder> {
     private static final String TAG = "MyEDSItemAdapter";

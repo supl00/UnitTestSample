@@ -1,180 +1,257 @@
 package com.gazua.ddeokrok.coinman.chart;
 
 import android.content.Context;
-import android.database.Cursor;
+import android.graphics.drawable.NinePatchDrawable;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.content.CursorLoader;
-import android.util.Log;
-import android.view.LayoutInflater;
+import android.os.Parcelable;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.gazua.ddeokrok.coinman.R;
-import com.gazua.ddeokrok.coinman.data.CoinData;
-import com.gazua.ddeokrok.coinman.data.DatabaseHelper;
-import com.gazua.ddeokrok.coinman.data.DbSchema;
-import com.gazua.ddeokrok.coinman.view.ReorderableLinearLayout;
+import com.gazua.ddeokrok.coinman.widget.advrecyclerview.animator.GeneralItemAnimator;
+import com.gazua.ddeokrok.coinman.widget.advrecyclerview.animator.SwipeDismissItemAnimator;
+import com.gazua.ddeokrok.coinman.widget.advrecyclerview.decoration.ItemShadowDecorator;
+import com.gazua.ddeokrok.coinman.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
+import com.gazua.ddeokrok.coinman.widget.advrecyclerview.draggable.RecyclerViewDragDropManager;
+import com.gazua.ddeokrok.coinman.widget.advrecyclerview.expandable.RecyclerViewExpandableItemManager;
+import com.gazua.ddeokrok.coinman.widget.advrecyclerview.swipeable.RecyclerViewSwipeManager;
+import com.gazua.ddeokrok.coinman.widget.advrecyclerview.touchguard.RecyclerViewTouchActionGuardManager;
+import com.gazua.ddeokrok.coinman.widget.advrecyclerview.utils.WrapperAdapterUtils;
 
-import java.util.ArrayList;
 
-
-public class ChartLayoutManager {
+public class ChartLayoutManager implements RecyclerViewExpandableItemManager.OnGroupCollapseListener, RecyclerViewExpandableItemManager.OnGroupExpandListener {
     private static final String TAG = "ChartLayoutManager";
+    private static final String SAVED_STATE_EXPANDABLE_ITEM_MANAGER = "RecyclerViewExpandableItemManager";
 
-    private ReorderableLinearLayout mCoinInfoContainer;
-    private boolean mIsEditModeEnabled = true;
+    private RecyclerView mRecyclerView;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.Adapter mWrappedAdapter;
+    private RecyclerViewExpandableItemManager mRecyclerViewExpandableItemManager;
+    private RecyclerViewDragDropManager mRecyclerViewDragDropManager;
+    private RecyclerViewSwipeManager mRecyclerViewSwipeManager;
+    private RecyclerViewTouchActionGuardManager mRecyclerViewTouchActionGuardManager;
 
-    public ChartLayoutManager() {
-    }
+    private ChartDataProvider mProvider;
+    private Context mContext;
 
-    public void setParent(View parent) {
-        mCoinInfoContainer = parent.findViewById(R.id.chart_container);
-    }
+    public ChartLayoutManager(View parent, Bundle savedInstanceState) {
+        mContext = parent.getContext();
+        //noinspection ConstantConditions
+        mRecyclerView = parent.findViewById(R.id.recycler_view);
+        mLayoutManager = new LinearLayoutManager(parent.getContext());
 
-    public void setEnableEditMode(boolean enable) {
-        mIsEditModeEnabled = enable;
+        final Parcelable eimSavedState = (savedInstanceState != null) ? savedInstanceState.getParcelable(SAVED_STATE_EXPANDABLE_ITEM_MANAGER) : null;
+        mRecyclerViewExpandableItemManager = new RecyclerViewExpandableItemManager(eimSavedState);
+        mRecyclerViewExpandableItemManager.setOnGroupExpandListener(this);
+        mRecyclerViewExpandableItemManager.setOnGroupCollapseListener(this);
 
-//        if (mCoinInfoContainer != null) {
-//            int childCount = mCoinInfoContainer.getChildCount();
-//            for (int i = 0; i < childCount; i++) {
-//                LinearLayout coinInfo = (LinearLayout)mCoinInfoContainer.getChildAt(i);
-//                if (coinInfo != null) {
-//                    View dragButton = coinInfo.findViewById(R.id.chart_coin_content_drag);
-//                    dragButton.setVisibility(enable ? View.VISIBLE : View.GONE);
-//
-//                    View hideButton = coinInfo.findViewById(R.id.chart_coin_content_enable_button);
-//                    hideButton.setVisibility(enable ? View.VISIBLE : View.GONE);
-//
-//                    ReorderableLinearLayout coinDetailContainer = coinInfo.findViewById(R.id.chart_coin_content_detail_container);
-//                    if (coinDetailContainer != null) {
-//                        int detailCount = coinDetailContainer.getChildCount();
-//                        for (int j = 0; j < detailCount; j++) {
-//                            LinearLayout coinDetailLayout = (LinearLayout)coinDetailContainer.getChildAt(j);
-//                            View detailDragButton = coinDetailLayout.findViewById(R.id.chart_coin_detail_drag);
-//                            detailDragButton.setVisibility(enable ? View.VISIBLE : View.GONE);
-//                        }
-//                    }
-//                }
-//            }
-//        }
-    }
+        // touch guard manager  (this class is required to suppress scrolling while swipe-dismiss animation is running)
+        mRecyclerViewTouchActionGuardManager = new RecyclerViewTouchActionGuardManager();
+        mRecyclerViewTouchActionGuardManager.setInterceptVerticalScrollingWhileAnimationRunning(true);
+        mRecyclerViewTouchActionGuardManager.setEnabled(true);
 
-    public boolean isEditModeEnabled() {
-        return mIsEditModeEnabled;
-    }
+        // drag & drop manager
+        mRecyclerViewDragDropManager = new RecyclerViewDragDropManager();
+        mRecyclerViewDragDropManager.setDraggingItemShadowDrawable(
+                (NinePatchDrawable) ContextCompat.getDrawable(mContext, R.drawable.material_shadow_z3));
 
-    public void addOrUpdateLayout(Cursor cursor) {
-        if (mCoinInfoContainer == null) {
-            return;
-        }
+        // swipe manager
+        mRecyclerViewSwipeManager = new RecyclerViewSwipeManager();
 
-        LayoutInflater inflater = LayoutInflater.from(mCoinInfoContainer.getContext());
+        //adapter
+        final ChartRecyclerViewAdapter myItemAdapter =
+                new ChartRecyclerViewAdapter(mRecyclerViewExpandableItemManager, getDataProvider());
 
-        if (cursor.moveToFirst()) {
-            while (!cursor.isAfterLast()) {
-                String coinName = cursor.getString(cursor.getColumnIndex(DbSchema.Chart.Coin.KEY_COIN_NAME));
-                String exchange = cursor.getString(cursor.getColumnIndex(DbSchema.Chart.Exchange.KEY_EXCHANGE_NAME));
-
-                LinearLayout contentLayout = mCoinInfoContainer.findViewWithTag(coinName);
-                if (contentLayout != null) {
-                    updateContentLayout(cursor, contentLayout);
-
-                    LinearLayout coinDetailLayout = contentLayout.findViewWithTag(exchange);
-                    if (coinDetailLayout != null) {
-                        updateDetailLayout(cursor, coinDetailLayout);
-                    } else {
-                        ReorderableLinearLayout coinDetailContainer = contentLayout.findViewById(R.id.chart_coin_content_detail_container);
-                        coinDetailLayout = (LinearLayout) inflater.inflate(R.layout.chart_coin_detail, null, false);
-                        updateDetailLayout(cursor, coinDetailLayout);
-                        coinDetailLayout.setTag(exchange);
-
-                        coinDetailContainer.addView(coinDetailLayout);
-                        coinDetailContainer.setViewDraggable(coinDetailLayout, coinDetailLayout.findViewById(R.id.chart_coin_detail_drag));
-                    }
-                } else {
-                    contentLayout = (LinearLayout) inflater.inflate(R.layout.chart_coin_content, null, false);
-                    updateContentLayout(cursor, contentLayout);
-                    contentLayout.setTag(coinName);
-
-                    mCoinInfoContainer.addView(contentLayout);
-                    mCoinInfoContainer.setViewDraggable(contentLayout, contentLayout.findViewById(R.id.chart_coin_content_drag));
-
-                    ReorderableLinearLayout coinDetailContainer = contentLayout.findViewById(R.id.chart_coin_content_detail_container);
-
-                    LinearLayout coinDetailLayout = (LinearLayout) inflater.inflate(R.layout.chart_coin_detail, null, false);
-
-                    updateDetailLayout(cursor, coinDetailLayout);
-                    coinDetailLayout.setTag(exchange);
-
-                    coinDetailContainer.addView(coinDetailLayout);
-                    coinDetailContainer.setViewDraggable(coinDetailLayout, coinDetailLayout.findViewById(R.id.chart_coin_detail_drag));
-                }
-
-                cursor.moveToNext();
+        myItemAdapter.setEventListener(new ChartRecyclerViewAdapter.EventListener() {
+            @Override
+            public void onGroupItemRemoved(int groupPosition) {
+//                ((ExpandableDraggableSwipeableExampleActivity) getActivity()).onGroupItemRemoved(groupPosition);
             }
+
+            @Override
+            public void onChildItemRemoved(int groupPosition, int childPosition) {
+//                ((ExpandableDraggableSwipeableExampleActivity) getActivity()).onChildItemRemoved(groupPosition, childPosition);
+            }
+
+            @Override
+            public void onGroupItemPinned(int groupPosition) {
+//                ((ExpandableDraggableSwipeableExampleActivity) getActivity()).onGroupItemPinned(groupPosition);
+            }
+
+            @Override
+            public void onChildItemPinned(int groupPosition, int childPosition) {
+//                ((ExpandableDraggableSwipeableExampleActivity) getActivity()).onChildItemPinned(groupPosition, childPosition);
+            }
+
+            @Override
+            public void onItemViewClicked(View v, boolean pinned) {
+                onItemViewClick(v, pinned);
+            }
+        });
+
+        mAdapter = myItemAdapter;
+
+        mWrappedAdapter = mRecyclerViewExpandableItemManager.createWrappedAdapter(myItemAdapter);       // wrap for expanding
+        mWrappedAdapter = mRecyclerViewDragDropManager.createWrappedAdapter(mWrappedAdapter);           // wrap for dragging
+        mWrappedAdapter = mRecyclerViewSwipeManager.createWrappedAdapter(mWrappedAdapter);      // wrap for swiping
+
+        final GeneralItemAnimator animator = new SwipeDismissItemAnimator();
+
+        // Change animations are enabled by default since support-v7-recyclerview v22.
+        // Disable the change animation in order to make turning back animation of swiped item works properly.
+        // Also need to disable them when using animation indicator.
+        animator.setSupportsChangeAnimations(false);
+
+
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setAdapter(mWrappedAdapter);  // requires *wrapped* adapter
+        mRecyclerView.setItemAnimator(animator);
+        mRecyclerView.setHasFixedSize(false);
+
+        // additional decorations
+        //noinspection StatementWithEmptyBody
+        if (supportsViewElevation()) {
+            // Lollipop or later has native drop shadow feature. ItemShadowDecorator is not required.
+        } else {
+            mRecyclerView.addItemDecoration(new ItemShadowDecorator((NinePatchDrawable) ContextCompat.getDrawable(mContext, R.drawable.material_shadow_z1)));
+        }
+        mRecyclerView.addItemDecoration(new SimpleListDividerDecorator(ContextCompat.getDrawable(mContext, R.drawable.list_divider_h), true));
+
+
+        // NOTE:
+        // The initialization order is very important! This order determines the priority of touch event handling.
+        //
+        // priority: TouchActionGuard > Swipe > DragAndDrop > ExpandableItem
+        mRecyclerViewTouchActionGuardManager.attachRecyclerView(mRecyclerView);
+        mRecyclerViewSwipeManager.attachRecyclerView(mRecyclerView);
+        mRecyclerViewDragDropManager.attachRecyclerView(mRecyclerView);
+        mRecyclerViewExpandableItemManager.attachRecyclerView(mRecyclerView);
+    }
+
+    public void close() {
+        if (mRecyclerViewDragDropManager != null) {
+            mRecyclerViewDragDropManager.release();
+            mRecyclerViewDragDropManager = null;
+        }
+
+        if (mRecyclerViewSwipeManager != null) {
+            mRecyclerViewSwipeManager.release();
+            mRecyclerViewSwipeManager = null;
+        }
+
+        if (mRecyclerViewTouchActionGuardManager != null) {
+            mRecyclerViewTouchActionGuardManager.release();
+            mRecyclerViewTouchActionGuardManager = null;
+        }
+
+        if (mRecyclerViewExpandableItemManager != null) {
+            mRecyclerViewExpandableItemManager.release();
+            mRecyclerViewExpandableItemManager = null;
+        }
+
+        if (mRecyclerView != null) {
+            mRecyclerView.setItemAnimator(null);
+            mRecyclerView.setAdapter(null);
+            mRecyclerView = null;
+        }
+
+        if (mWrappedAdapter != null) {
+            WrapperAdapterUtils.releaseAll(mWrappedAdapter);
+            mWrappedAdapter = null;
+        }
+        mAdapter = null;
+        mLayoutManager = null;
+    }
+
+    public void saveInstanceState(Bundle outState) {
+        if (mRecyclerViewExpandableItemManager != null) {
+            outState.putParcelable(SAVED_STATE_EXPANDABLE_ITEM_MANAGER, mRecyclerViewExpandableItemManager.getSavedState());
         }
     }
 
-    private void updateContentLayout(Cursor cursor, ViewGroup contentLayout) {
-        boolean isVisible = cursor.getInt(cursor.getColumnIndex(DbSchema.Chart.Coin.KEY_COIN_IS_VISIBLE)) == 1;
-        if (isVisible) {
-            contentLayout.setVisibility(View.VISIBLE);
-        } else {
-            contentLayout.setVisibility(View.GONE);
-            return;
-        }
-
-        TextView abbName = contentLayout.findViewById(R.id.chart_coin_content_abb_name);
-        abbName.setText(cursor.getString(cursor.getColumnIndex(DbSchema.Chart.Coin.KEY_COIN_ABB_NAME)));
-
-        TextView diffView = contentLayout.findViewById(R.id.chart_coin_content_diff_percent);
-        diffView.setText(String.format("%.2f", Float.parseFloat(cursor.getString(cursor.getColumnIndex(DbSchema.Chart.Exchange.KEY_EXCHANGE_DIFF_PERCENT)))) + "%");
-
-        ImageView iconView = contentLayout.findViewById(R.id.chart_coin_content_icon);
-
-        Context context = mCoinInfoContainer.getContext();
-        int resId = context.getResources().getIdentifier(cursor.getString(cursor.getColumnIndex(DbSchema.Chart.Coin.KEY_COIN_ICON)), "drawable", context.getPackageName());
-        iconView.setImageResource(resId);
-
-        TextView nameView = contentLayout.findViewById(R.id.chart_coin_content_name);
-        nameView.setText(cursor.getString(cursor.getColumnIndex(DbSchema.Chart.Coin.KEY_COIN_NAME)));
-
-        View dragView = contentLayout.findViewById(R.id.chart_coin_content_drag);
-        dragView.setVisibility(mIsEditModeEnabled ? View.VISIBLE : View.GONE);
-
-        View enableButton = contentLayout.findViewById(R.id.chart_coin_content_enable_button);
-        enableButton.setVisibility(mIsEditModeEnabled ? View.VISIBLE : View.GONE);
+    private boolean supportsViewElevation() {
+        return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP);
     }
 
-    private void updateDetailLayout(Cursor cursor, ViewGroup detailLayout) {
-        boolean isVisible = cursor.getInt(cursor.getColumnIndex(DbSchema.Chart.Exchange.KEY_EXCHANGE_IS_VISIBLE)) == 1;
-        if (isVisible) {
-            detailLayout.setVisibility(View.VISIBLE);
-        } else {
-            detailLayout.setVisibility(View.GONE);
+    private void adjustScrollPositionOnGroupExpanded(int groupPosition) {
+        int childItemHeight = mContext.getResources().getDimensionPixelSize(R.dimen.list_item_height);
+        int topMargin = (int) (mContext.getResources().getDisplayMetrics().density * 16); // top-spacing: 16dp
+        int bottomMargin = topMargin; // bottom-spacing: 16dp
+
+        mRecyclerViewExpandableItemManager.scrollToGroup(groupPosition, childItemHeight, topMargin, bottomMargin);
+    }
+
+
+    @Override
+    public void onGroupExpand(int groupPosition, boolean fromUser, Object payload) {
+        if (fromUser) {
+            adjustScrollPositionOnGroupExpanded(groupPosition);
+        }
+
+    }
+
+    @Override
+    public void onGroupCollapse(int groupPosition, boolean fromUser, Object payload) {
+
+    }
+
+    public ChartDataProvider getDataProvider() {
+//        return ((ExpandableDraggableSwipeableExampleActivity) getActivity()).getDataProvider();
+        if (mProvider == null) {
+            mProvider = new ChartDataProvider(new ChartDbManager(mContext));
+        }
+        return mProvider;
+    }
+
+    public void notifyGroupItemRestored(int groupPosition) {
+        mAdapter.notifyDataSetChanged();
+
+        final long expandablePosition = RecyclerViewExpandableItemManager.getPackedPositionForGroup(groupPosition);
+        final int flatPosition = mRecyclerViewExpandableItemManager.getFlatPosition(expandablePosition);
+        mRecyclerView.scrollToPosition(flatPosition);
+    }
+
+    public void notifyChildItemRestored(int groupPosition, int childPosition) {
+        mAdapter.notifyDataSetChanged();
+
+        final long expandablePosition = RecyclerViewExpandableItemManager.getPackedPositionForChild(groupPosition, childPosition);
+        final int flatPosition = mRecyclerViewExpandableItemManager.getFlatPosition(expandablePosition);
+        mRecyclerView.scrollToPosition(flatPosition);
+    }
+
+    public void notifyGroupItemChanged(int groupPosition) {
+        final long expandablePosition = RecyclerViewExpandableItemManager.getPackedPositionForGroup(groupPosition);
+        final int flatPosition = mRecyclerViewExpandableItemManager.getFlatPosition(expandablePosition);
+
+        mAdapter.notifyItemChanged(flatPosition);
+    }
+
+    public void notifyChildItemChanged(int groupPosition, int childPosition) {
+        final long expandablePosition = RecyclerViewExpandableItemManager.getPackedPositionForChild(groupPosition, childPosition);
+        final int flatPosition = mRecyclerViewExpandableItemManager.getFlatPosition(expandablePosition);
+
+        mAdapter.notifyItemChanged(flatPosition);
+    }
+
+    private void onItemViewClick(View v, boolean pinned) {
+        final int flatPosition = mRecyclerView.getChildAdapterPosition(v);
+
+        if (flatPosition == RecyclerView.NO_POSITION) {
             return;
         }
 
-        TextView exchangeView = detailLayout.findViewById(R.id.chart_coin_detail_exchange_name);
-        exchangeView.setText(cursor.getString(cursor.getColumnIndex(DbSchema.Chart.Exchange.KEY_EXCHANGE_NAME)));
+        final long expandablePosition = mRecyclerViewExpandableItemManager.getExpandablePosition(flatPosition);
+        final int groupPosition = RecyclerViewExpandableItemManager.getPackedPositionGroup(expandablePosition);
+        final int childPosition = RecyclerViewExpandableItemManager.getPackedPositionChild(expandablePosition);
 
-        TextView diffPercentView = detailLayout.findViewById(R.id.chart_coin_detail_diff_percent);
-        diffPercentView.setText(String.format("%.2f", Float.parseFloat(cursor.getString(cursor.getColumnIndex(DbSchema.Chart.Exchange.KEY_EXCHANGE_DIFF_PERCENT)))) + "%");
-
-        TextView priceView = detailLayout.findViewById(R.id.chart_coin_detail_price);
-        priceView.setText(cursor.getString(cursor.getColumnIndex(DbSchema.Chart.Exchange.KEY_EXCHANGE_PRICE)));
-
-        TextView unitView = detailLayout.findViewById(R.id.chart_coin_detail_currency_unit);
-        unitView.setText(cursor.getString(cursor.getColumnIndex(DbSchema.Chart.Exchange.KEY_EXCHANGE_CURRENCY_UNIT)));
-
-        TextView premiumView = detailLayout.findViewById(R.id.chart_coin_detail_premium);
-        premiumView.setText(String.format("%.2f", Float.parseFloat(cursor.getString(cursor.getColumnIndex(DbSchema.Chart.Exchange.KEY_EXCHANGE_PREMIUM)))) + "%");
-
-        View dragView = detailLayout.findViewById(R.id.chart_coin_detail_drag);
-        dragView.setVisibility(mIsEditModeEnabled ? View.VISIBLE : View.GONE);
+        if (childPosition == RecyclerView.NO_POSITION) {
+//            ((ExpandableDraggableSwipeableExampleActivity) getActivity()).onGroupItemClicked(groupPosition);
+        } else {
+//            ((ExpandableDraggableSwipeableExampleActivity) getActivity()).onChildItemClicked(groupPosition, childPosition);
+        }
     }
 }
