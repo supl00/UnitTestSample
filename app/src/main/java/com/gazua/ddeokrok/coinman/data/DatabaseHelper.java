@@ -64,7 +64,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             ContentValues coinContent = new ContentValues();
             coinContent.put(DbSchema.Chart.Coin.KEY_COIN_NAME, coin.getName());
             coinContent.put(DbSchema.Chart.Coin.KEY_COIN_ABB_NAME, coin.getAbbName());
-            coinContent.put(DbSchema.Chart.Coin.KEY_COIN_ICON, coin.getIconResId());
+            coinContent.put(DbSchema.Chart.Coin.KEY_COIN_ICON, coin.getIconResName());
 
             ContentValues exchangeContent = new ContentValues();
             exchangeContent.put(DbSchema.Chart.Exchange.KEY_EXCHANGE_NAME, coin.getExchange());
@@ -126,6 +126,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             ret = db.rawQuery(queryString, null);
 
 
+        } catch(Exception e) {
+            Log.e(TAG, "Error while trying to fetchAll()");
+        }
+
+        return ret;
+    }
+
+    public Cursor getCoinItem() {
+        Cursor ret = null;
+        try {
+            SQLiteDatabase db = getReadableDatabase();
+            final String queryString = "SELECT * FROM " + DbSchema.Chart.TABLE_COINS;
+            ret = db.rawQuery(queryString, null);
+        } catch(Exception e) {
+            Log.e(TAG, "Error while trying to fetchAll()");
+        }
+
+        return ret;
+    }
+
+    public Cursor getExchangeItem(int key) {
+        Cursor ret = null;
+        try {
+            SQLiteDatabase db = getReadableDatabase();
+            final String queryString = "SELECT * FROM " + DbSchema.Chart.TABLE_EXCHANGES + " WHERE " +
+                    DbSchema.Chart.TABLE_EXCHANGES + "." + DbSchema.Chart.Exchange.KEY_EXCHANGE_FK_COIN + "=" + key;
+            ret = db.rawQuery(queryString, null);
         } catch(Exception e) {
             Log.e(TAG, "Error while trying to fetchAll()");
         }

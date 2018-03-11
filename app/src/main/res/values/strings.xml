@@ -7,4 +7,5 @@
     <string name="tab_name_chart">Chart</string>
     <string name="tab_name_board">Board</string>
     <string name="tab_name_information">Information</string>
+    <string name="tab_name_test">Test</string>
 </resources>

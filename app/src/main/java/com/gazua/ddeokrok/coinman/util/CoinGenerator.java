@@ -21,7 +21,7 @@ public class CoinGenerator {
     public static int MAX_COIN_COUNT = 12;
 
 
-    public static ArrayList<CoinData> getCoinSampleData(int index) {
+    public static ArrayList<CoinData> getCoinSampleData(Context context, int index) {
         ArrayList<CoinData> list = new ArrayList<>();
 
 //        int count = getRandomNumber(5, 10);
@@ -34,7 +34,7 @@ public class CoinGenerator {
             data.setExchange(CoinInfo.EXCHANGE.values()[i].getName());
             data.setCurrencyUnit(CoinInfo.EXCHANGE.values()[i].isUSDUnitType() ? "USD" : "KRW");
             data.setPrice(getRandomNumber(10000, 30000000));
-            data.setIconResId(CoinInfo.COIN.values()[index].getIconResId());
+            data.setIconResName(CoinInfo.COIN.values()[index].getIconResName(context.getResources()));
             list.add(data);
         }
 

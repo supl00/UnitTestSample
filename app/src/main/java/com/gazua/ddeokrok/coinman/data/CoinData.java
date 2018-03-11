@@ -14,7 +14,7 @@ public class CoinData {
     private float mPremium = 0.0f;
     private String mCurrencyUnit = "KRW";
 
-    private int mIconResId;
+    private String mIconResName;
 
     public CoinData(String coinName, String exchange) {
         mUniqueName = coinName + exchange;
@@ -80,11 +80,11 @@ public class CoinData {
         return mPremium;
     }
 
-    public void setIconResId(int resId) {
-        mIconResId = resId;
+    public void setIconResName(String name) {
+        mIconResName = name;
     }
 
-    public int getIconResId() {
-        return mIconResId;
+    public String getIconResName() {
+        return mIconResName;
     }
 }

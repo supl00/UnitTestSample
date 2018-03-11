@@ -11,7 +11,7 @@ public class DbSchema {
                 Coin.KEY_COIN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
                 Coin.KEY_COIN_NAME + " TEXT NOT NULL, " +
                 Coin.KEY_COIN_ABB_NAME + " TEXT NOT NULL, " +
-                Coin.KEY_COIN_ICON + " INTEGER NOT NULL DEFAULT 0, " +
+                Coin.KEY_COIN_ICON + " TEXT NOT NULL, " +
                 Coin.KEY_COIN_IS_VISIBLE + " INTEGER NOT NULL DEFAULT 1" +
                 ")";
 
