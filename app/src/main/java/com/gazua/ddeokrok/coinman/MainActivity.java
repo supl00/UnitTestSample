@@ -17,6 +17,7 @@ import android.view.View;
 
 import com.gazua.ddeokrok.coinman.board.BoardFragment;
 import com.gazua.ddeokrok.coinman.chart.ChartFragment;
+import com.gazua.ddeokrok.coinman.chart.ChartFragment2;
 import com.gazua.ddeokrok.coinman.common.FabActionListener;
 import com.gazua.ddeokrok.coinman.information.InformationsFragment;
 
@@ -116,9 +117,9 @@ public class MainActivity extends AppCompatActivity {
         static final int INDEX_TITLE = 1;
 
         final Object[][] FRAGMENT_ARRAY = {
-                {ChartFragment.class, R.string.tab_name_chart},
+                {ChartFragment2.class, R.string.tab_name_chart},
                 {BoardFragment.class, R.string.tab_name_board},
-                {InformationsFragment.class, R.string.tab_name_information}
+                {InformationsFragment.class, R.string.tab_name_information},
         };
 
         private List<Fragment> fragments = new ArrayList<>();

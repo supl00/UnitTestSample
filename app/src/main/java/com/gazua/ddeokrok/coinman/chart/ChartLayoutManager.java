@@ -1,5 +1,6 @@
 package com.gazua.ddeokrok.coinman.chart;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -134,7 +135,10 @@ public class ChartLayoutManager {
         diffView.setText(String.format("%.2f", Float.parseFloat(cursor.getString(cursor.getColumnIndex(DbSchema.Chart.Exchange.KEY_EXCHANGE_DIFF_PERCENT)))) + "%");
 
         ImageView iconView = contentLayout.findViewById(R.id.chart_coin_content_icon);
-        iconView.setImageResource(cursor.getInt(cursor.getColumnIndex(DbSchema.Chart.Coin.KEY_COIN_ICON)));
+
+        Context context = mCoinInfoContainer.getContext();
+        int resId = context.getResources().getIdentifier(cursor.getString(cursor.getColumnIndex(DbSchema.Chart.Coin.KEY_COIN_ICON)), "drawable", context.getPackageName());
+        iconView.setImageResource(resId);
 
         TextView nameView = contentLayout.findViewById(R.id.chart_coin_content_name);
         nameView.setText(cursor.getString(cursor.getColumnIndex(DbSchema.Chart.Coin.KEY_COIN_NAME)));

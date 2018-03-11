@@ -39,8 +39,20 @@ public class ChartDbManager {
         cursor.close();
     }
 
+    public Cursor getGroupItem() {
+        DatabaseHelper dbHelper = DatabaseHelper.getInstance(mContext);
+        return dbHelper.getCoinItem();
+    }
+
+    public Cursor getChildItem(int key) {
+        DatabaseHelper dbHelper = DatabaseHelper.getInstance(mContext);
+        return dbHelper.getExchangeItem(key);
+    }
+
     public Cursor getAllItem() {
         DatabaseHelper dbHelper = DatabaseHelper.getInstance(mContext);
         return dbHelper.fetchAll();
     }
+
+
 }

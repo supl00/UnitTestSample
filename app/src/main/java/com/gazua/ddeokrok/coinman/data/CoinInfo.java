@@ -1,5 +1,6 @@
 package com.gazua.ddeokrok.coinman.data;
 
+import android.content.res.Resources;
 import com.gazua.ddeokrok.coinman.R;
 
 
@@ -120,8 +121,8 @@ public class CoinInfo {
             }
 
             @Override
-            public int getIconResId() {
-                return R.drawable.btc2;
+            public String getIconResName(Resources res) {
+                return res.getResourceEntryName(R.drawable.btc2);
             }
         },
         ETH {
@@ -136,8 +137,8 @@ public class CoinInfo {
             }
 
             @Override
-            public int getIconResId() {
-                return R.drawable.eth2;
+            public String getIconResName(Resources res) {
+                return res.getResourceEntryName(R.drawable.eth2);
             }
         },
         DASH {
@@ -152,8 +153,8 @@ public class CoinInfo {
             }
 
             @Override
-            public int getIconResId() {
-                return R.drawable.dash;
+            public String getIconResName(Resources res) {
+                return res.getResourceEntryName(R.drawable.dash);
             }
         },
         LTC {
@@ -168,8 +169,8 @@ public class CoinInfo {
             }
 
             @Override
-            public int getIconResId() {
-                return R.drawable.ltc;
+            public String getIconResName(Resources res) {
+                return res.getResourceEntryName(R.drawable.ltc);
             }
         },
         ETC {
@@ -184,8 +185,8 @@ public class CoinInfo {
             }
 
             @Override
-            public int getIconResId() {
-                return R.drawable.etc;
+            public String getIconResName(Resources res) {
+                return res.getResourceEntryName(R.drawable.etc);
             }
         },
         XRP {
@@ -200,8 +201,8 @@ public class CoinInfo {
             }
 
             @Override
-            public int getIconResId() {
-                return R.drawable.xrp;
+            public String getIconResName(Resources res) {
+                return res.getResourceEntryName(R.drawable.xrp);
             }
         },
         BCH {
@@ -216,8 +217,8 @@ public class CoinInfo {
             }
 
             @Override
-            public int getIconResId() {
-                return R.drawable.bch;
+            public String getIconResName(Resources res) {
+                return res.getResourceEntryName(R.drawable.bch);
             }
         },
         XMR {
@@ -232,8 +233,8 @@ public class CoinInfo {
             }
 
             @Override
-            public int getIconResId() {
-                return R.drawable.xmr;
+            public String getIconResName(Resources res) {
+                return res.getResourceEntryName(R.drawable.xmr);
             }
         },
         QTUM {
@@ -248,8 +249,8 @@ public class CoinInfo {
             }
 
             @Override
-            public int getIconResId() {
-                return R.drawable.qtum;
+            public String getIconResName(Resources res) {
+                return res.getResourceEntryName(R.drawable.qtum);
             }
         },
         ZEC {
@@ -264,8 +265,8 @@ public class CoinInfo {
             }
 
             @Override
-            public int getIconResId() {
-                return R.drawable.zec;
+            public String getIconResName(Resources res) {
+                return res.getResourceEntryName(R.drawable.zec);
             }
         },
         BTG {
@@ -280,8 +281,8 @@ public class CoinInfo {
             }
 
             @Override
-            public int getIconResId() {
-                return R.drawable.btg;
+            public String getIconResName(Resources res) {
+                return res.getResourceEntryName(R.drawable.btg);
             }
         },
         EOS {
@@ -296,14 +297,14 @@ public class CoinInfo {
             }
 
             @Override
-            public int getIconResId() {
-                return R.drawable.eos;
+            public String getIconResName(Resources res) {
+                return res.getResourceEntryName(R.drawable.eos);
             }
         };
 
         public abstract String getName();
         public abstract String getAbbName();
-        public abstract int getIconResId();
+        public abstract String getIconResName(Resources res);
 
         static COIN fromName(String name) {
             for (COIN coin : values()) {
