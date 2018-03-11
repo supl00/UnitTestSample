@@ -18,25 +18,11 @@ import com.gazua.ddeokrok.coinman.board.data.BoardData;
 import com.gazua.ddeokrok.coinman.board.url.UrlBuilder;
 import com.gazua.ddeokrok.coinman.common.FabActionListener;
 import com.gazua.ddeokrok.coinman.common.Logger;
-import com.gazua.ddeokrok.coinman.network.ApiUtils;
-import com.gazua.ddeokrok.coinman.network.PageService;
-import com.gazua.ddeokrok.coinman.network.page.Page;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Element;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
-import io.reactivex.Observable;
 import io.reactivex.Single;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * Created by kimju on 2018-02-15.
@@ -94,16 +80,7 @@ public class BoardFragment extends Fragment implements FabActionListener {
     public void loadPage(int page) {
         Logger.d(TAG, " loadPage - page : " + page);
         swipeRefreshLayout.setRefreshing(true);
-        UrlBuilder.target(UrlBuilder.TARGET_SERVER_CLIEN)
-                .page(page)
-                .category(UrlBuilder.CATEGORY_COIN)
-                .query(boardDataList::addAll,
-                        throwable -> Logger.d(TAG, "loadPage, e : " + throwable.getMessage()),
-                        () -> {
-//                            boardRecyclerView.getAdapter().notifyDataSetChanged();
-//                            swipeRefreshLayout.setRefreshing(false);
-                        });
-        UrlBuilder.target(UrlBuilder.TARGET_SERVER_BULLPEN)
+        UrlBuilder.target(UrlBuilder.TARGET_SERVER_CLIEN, UrlBuilder.TARGET_SERVER_BULLPEN)
                 .page(page)
                 .category(UrlBuilder.CATEGORY_COIN)
                 .query(boardDataList::addAll,
@@ -112,6 +89,24 @@ public class BoardFragment extends Fragment implements FabActionListener {
                             boardRecyclerView.getAdapter().notifyDataSetChanged();
                             swipeRefreshLayout.setRefreshing(false);
                         });
+//        UrlBuilder.target(UrlBuilder.TARGET_SERVER_CLIEN)
+//                .page(page)
+//                .category(UrlBuilder.CATEGORY_COIN)
+//                .query(boardDataList::addAll,
+//                        throwable -> Logger.d(TAG, "loadPage, e : " + throwable.getMessage()),
+//                        () -> {
+//                            boardRecyclerView.getAdapter().notifyDataSetChanged();
+//                            swipeRefreshLayout.setRefreshing(false);
+//                        });
+//        UrlBuilder.target(UrlBuilder.TARGET_SERVER_BULLPEN)
+//                .page(page)
+//                .category(UrlBuilder.CATEGORY_COIN)
+//                .query(boardDataList::addAll,
+//                        throwable -> Logger.d(TAG, "loadPage, e : " + throwable.getMessage()),
+//                        () -> {
+//                            boardRecyclerView.getAdapter().notifyDataSetChanged();
+//                            swipeRefreshLayout.setRefreshing(false);
+//                        });
     }
 
     @Override
