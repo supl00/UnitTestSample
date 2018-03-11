@@ -31,6 +31,8 @@ public class WebViewActivity extends AppCompatActivity {
         settings.setSupportMultipleWindows(true);
         settings.setSupportZoom(true);
         settings.setBuiltInZoomControls(false);
+        settings.setUseWideViewPort(true);
+        settings.setLoadWithOverviewMode(true);
         mWebView.setScrollbarFadingEnabled(true);
         mWebView.loadUrl(getIntent().getStringExtra("url"));
         mWebView.setWebViewClient(new WebViewClient() {

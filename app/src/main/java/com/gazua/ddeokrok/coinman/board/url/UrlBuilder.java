@@ -1,0 +1,117 @@
+package com.gazua.ddeokrok.coinman.board.url;
+
+import android.support.annotation.NonNull;
+
+import com.gazua.ddeokrok.coinman.board.data.BoardData;
+import com.gazua.ddeokrok.coinman.common.Logger;
+import com.gazua.ddeokrok.coinman.network.ApiUtils;
+import com.gazua.ddeokrok.coinman.network.PageService;
+import com.gazua.ddeokrok.coinman.network.page.Page;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
+import io.reactivex.internal.functions.Functions;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+import static android.content.ContentValues.TAG;
+
+/**
+ * Created by kimju on 2018-03-09.
+ */
+
+public class UrlBuilder {
+    public static final String TARGET_SERVER_BULLPEN = "bullpen";
+    public static final String TARGET_SERVER_CLIEN = "clien";
+
+    public static final int CATEGORY_COIN = 1;
+
+    private BaseServer baseServer;
+
+    private UrlBuilder(BaseServer baseServer) {
+        this.baseServer = baseServer;
+    }
+
+    private static UrlBuilder build(BaseServer baseServer) {
+        return new UrlBuilder(baseServer);
+    }
+
+    public static UrlBuilder target(@NonNull String targetServer) {
+        return build(BaseServer.asServer(targetServer));
+    }
+
+    public String baseUrl() {
+        return this.baseServer.baseUrl();
+    }
+
+    public String totalUrl() {
+        return this.baseServer.totalUrl();
+    }
+
+    public UrlBuilder category(int category) {
+        this.baseServer.category(category);
+        return this;
+    }
+
+    public UrlBuilder page(int page) {
+        this.baseServer.page(page);
+        return this;
+    }
+
+    public void query() {
+        query(Functions.emptyConsumer());
+    }
+
+    public void query(@NonNull Consumer<? super List<BoardData>> onSuccess) {
+        query(onSuccess, Functions.ERROR_CONSUMER);
+    }
+    public void query(@NonNull Consumer<? super List<BoardData>> onSuccess, @NonNull Consumer<? super Throwable> onError) {
+        query(onSuccess, Functions.ERROR_CONSUMER, Functions.EMPTY_ACTION);
+    }
+    public void query(@NonNull Consumer<? super List<BoardData>> onSuccess, @NonNull Consumer<? super Throwable> onError, Action onTerminate) {
+        Logger.d(TAG, " query - base : " + baseUrl() + ", total : " + totalUrl());
+        PageService pageService = ApiUtils.getRpJsoupService();
+        pageService.selectContentGetSubList(totalUrl())
+                .enqueue(new Callback<Page>() {
+                             @Override
+                             public void onResponse(@NonNull Call<Page> call, @NonNull Response<Page> response) {
+                                 Logger.d(TAG, "res : " + response);
+                                 final List<BoardData> boardDataList = new ArrayList<>();
+                                 BaseServer.asBoardList(baseServer, response.body().getContent())
+                                         .observeOn(AndroidSchedulers.mainThread())
+                                         .doOnError(throwable -> {
+                                             Logger.d(TAG, "onResponse, doOnError");
+                                             onError.accept(throwable);
+                                         })
+                                         .doOnComplete(() -> {
+                                             Logger.d(TAG, "onResponse, doOnComplete");
+                                             onSuccess.accept(boardDataList);
+                                         })
+                                         .doOnTerminate(() -> {
+                                             Logger.d(TAG, "onResponse, doOnTerminate");
+                                            onTerminate.run();
+                                         })
+                                         .forEach(data -> {
+                                             Logger.d(TAG, "onResponse, data : " + data.toString());
+                                             boardDataList.add(data);
+                                         });
+                             }
+
+                             @Override
+                             public void onFailure(Call<Page> call, Throwable t) {
+                                 Logger.d(TAG, "onFailure : " + t);
+                                 try {
+                                     onError.accept(t);
+                                     onTerminate.run();
+                                 } catch (Throwable e) {
+                                 }
+                             }
+                         }
+                );
+    }
+}

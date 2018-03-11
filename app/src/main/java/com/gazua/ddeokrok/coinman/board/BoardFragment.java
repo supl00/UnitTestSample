@@ -1,7 +1,6 @@
 package com.gazua.ddeokrok.coinman.board;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -10,13 +9,13 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.gazua.ddeokrok.coinman.R;
 import com.gazua.ddeokrok.coinman.board.data.BoardData;
+import com.gazua.ddeokrok.coinman.board.url.UrlBuilder;
 import com.gazua.ddeokrok.coinman.common.FabActionListener;
 import com.gazua.ddeokrok.coinman.common.Logger;
 import com.gazua.ddeokrok.coinman.network.ApiUtils;
@@ -27,12 +26,9 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.IntStream;
 
 import io.reactivex.Observable;
 import io.reactivex.Single;
@@ -48,7 +44,8 @@ import retrofit2.Response;
 
 public class BoardFragment extends Fragment implements FabActionListener {
     private static final String TAG = "BoardFragment";
-    private static final String URI_STRING = "https://m.clien.net/service/board/cm_vcoin";
+    private static final String URI_CLIEN = "https://m.clien.net/service/board/cm_vcoin";
+    private static final String URI_BULLPEN = "http://mlbpark.donga.com/mp/b.php?m=search&b=bullpen&query=%EC%BD%94%EC%9D%B8&select=sct";
 
     private int mPageCount = 0;
     private RecyclerView boardRecyclerView;
@@ -94,53 +91,15 @@ public class BoardFragment extends Fragment implements FabActionListener {
     }
 
     public void loadPage(int page) {
+        Logger.d(TAG, " loadPage - page : " + page);
         swipeRefreshLayout.setRefreshing(true);
-
-        String baseUri = URI_STRING + "?&po=" + page;
-        Logger.d(TAG, " loadPage - uri : " + baseUri);
-        PageService pageService = ApiUtils.getRpJsoupService();
-        pageService.selectContentGetSubList(baseUri).enqueue(new Callback<Page>() {
-            @Override
-            public void onResponse(Call<Page> call, Response<Page> response) {
-                Logger.d(TAG, "res : " + response);
-                final RecyclerView recyclerView = boardRecyclerView;
-                Observable.just(Optional.ofNullable(response.body()).orElse(Page.EMPTY_PAGE).getContent())
-                        .filter(Objects::nonNull)
-                        .map(Jsoup::parse)
-                        .map(document -> document.select("div.list_item"))
-                        .flatMap(Observable::fromIterable)
-                        .map(elements -> BoardData.asData(
-                                Observable.fromIterable(elements.select(".list_title .list_subject > span "))
-                                        .filter(element -> element.hasAttr("data-role"))
-                                        .singleElement()
-                                        .doOnError(throwable -> Logger.e(TAG, "message : " + throwable.getMessage()))
-                                        .map(Element::html)
-                                        .blockingGet(""),
-                                elements.select(".list_time > span").html(),
-                                elements.select(".list_hit > span").html(),
-                                "https://m.clien.net/" + elements.select("a").attr("href"),
-                                elements.select(".nickname").html(),
-                                elements.select(".nickimg > img").attr("src")))
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .doOnTerminate(() -> {
-                            recyclerView.getAdapter().notifyDataSetChanged();
-                            Logger.d(TAG, "doOnComplete");
-                            swipeRefreshLayout.setRefreshing(false);
-                        })
-                        .observeOn(Schedulers.io())
-                        .forEach(data -> {
-                            Logger.d(TAG, "data : " + data.toString());
-                            boardDataList.add(data);
-                        });
-            }
-
-            @Override
-            public void onFailure(Call<Page> call, Throwable t) {
-                Logger.d(TAG, "fail : " + t);
-                swipeRefreshLayout.setRefreshing(false);
-            }
-        });
+        UrlBuilder.target(UrlBuilder.TARGET_SERVER_CLIEN)
+                .page(page)
+                .category(UrlBuilder.CATEGORY_COIN)
+                .query(boardDataList::addAll, throwable -> Logger.d(TAG, "loadPage, e : " + throwable.getMessage()), () -> {
+                    boardRecyclerView.getAdapter().notifyDataSetChanged();
+                    swipeRefreshLayout.setRefreshing(false);
+                });
     }
 
     @Override
