@@ -72,6 +72,6 @@ public class BullpenServer extends BaseServer {
 
     @Override
     public String parseUserImage(Element elements) {
-        return elements.select("img").attr("src");
+        return null;//elements.select("img").attr("src");
     }
 }

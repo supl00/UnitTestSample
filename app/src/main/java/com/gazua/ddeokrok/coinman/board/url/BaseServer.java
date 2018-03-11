@@ -2,6 +2,7 @@ package com.gazua.ddeokrok.coinman.board.url;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
+import android.text.TextUtils;
 
 import com.gazua.ddeokrok.coinman.board.data.BoardData;
 import com.gazua.ddeokrok.coinman.common.Logger;
@@ -102,6 +103,7 @@ public abstract class BaseServer {
                         server.parseReplyCount(elements),
                         server.parseLinkUrl(elements),
                         server.parseUserNickname(elements),
-                        server.parseUserImage(elements)));
+                        server.parseUserImage(elements)))
+                .filter(data -> !TextUtils.isEmpty(data.getTitle()));
     }
 }

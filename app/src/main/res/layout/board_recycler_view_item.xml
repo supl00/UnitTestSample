@@ -107,7 +107,6 @@
                 android:id="@+id/writer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ellipsize="end"
                 android:lines="1"
                 android:textColor="@color/writer"
                 android:textSize="@dimen/board_writer"

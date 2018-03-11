@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
-                Maybe.just(mSectionsPagerAdapter.getItem(mViewPager.getCurrentItem()))
+                Maybe.fromCallable(() -> mSectionsPagerAdapter.getItem(mViewPager.getCurrentItem()))
                         .filter(Objects::nonNull)
                         .filter(fragment -> fragment instanceof FabActionListener)
                         .map(fragment -> (FabActionListener) fragment)

@@ -118,7 +118,7 @@ public class BoardFragment extends Fragment implements FabActionListener {
     public void onClickFab(FloatingActionButton fab) {
         Logger.d(TAG, "onClickFab, fab : " + fab);
         final int startPosition = 30;
-        Single.just(((LinearLayoutManager) boardRecyclerView.getLayoutManager()).findFirstVisibleItemPosition())
+        Single.fromCallable(() -> ((LinearLayoutManager) boardRecyclerView.getLayoutManager()).findFirstVisibleItemPosition())
                 .map(pos -> pos > startPosition ? startPosition : pos)
                 .subscribe(startPos -> {
                     boardRecyclerView.scrollToPosition(startPos);

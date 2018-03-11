@@ -72,11 +72,12 @@ public class BoardRecyclerViewAdapter extends RecyclerView.Adapter<BoardRecycler
         void update(@NonNull BoardData data) {
             this.title.setText(data.getTitle());
             this.userName.setText(data.getUserName());
+            this.userName.requestLayout();
             this.count.setText(data.getCount());
             this.time.setText(data.getDate());
             this.userImage.setImageDrawable(null);
 
-            Maybe.just(data.getUserImage())
+            Maybe.fromCallable(data::getUserImage)
                     .filter(Objects::nonNull)
                     .subscribe(imageUri -> Glide.with(itemView.getContext()).load(imageUri).into(this.userImage));
         }
