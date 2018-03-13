@@ -200,10 +200,10 @@ public class ChartLayoutManager implements RecyclerViewExpandableItemManager.OnG
     }
 
     public ChartDataProvider getDataProvider() {
-//        return ((ExpandableDraggableSwipeableExampleActivity) getActivity()).getDataProvider();
         if (mProvider == null) {
-            mProvider = new ChartDataProvider(new ChartDbManager(mContext));
+            mProvider = new ChartDataProvider(mContext, new ChartDbManager(mContext));
         }
+
         return mProvider;
     }
 

@@ -81,14 +81,14 @@ class ChartRecyclerViewAdapter extends AbstractExpandableItemAdapter<ChartRecycl
     public static abstract class MyBaseViewHolder extends AbstractDraggableSwipeableItemViewHolder implements ExpandableItemViewHolder {
         public ViewGroup mContainer;
         public View mDragHandle;
-        public TextView mTextView;
+
         private int mExpandStateFlags;
 
         public MyBaseViewHolder(View v) {
             super(v);
             mContainer = v.findViewById(R.id.container);
             mDragHandle = v.findViewById(R.id.drag_handle);
-            mTextView = v.findViewById(android.R.id.text1);
+
         }
 
         @Override
@@ -110,25 +110,36 @@ class ChartRecyclerViewAdapter extends AbstractExpandableItemAdapter<ChartRecycl
     public static class MyGroupViewHolder extends MyBaseViewHolder {
         private ChartItemIndicator mIndicator;
         private ImageView mIcon;
-        private TextView mSubNameView;
+        private TextView mCoinName;
+        private TextView mCoinSubName;
 
         public MyGroupViewHolder(View v) {
             super(v);
             mIndicator = v.findViewById(R.id.indicator);
             mIcon = v.findViewById(R.id.chart_coin_content_icon);
-            mSubNameView = v.findViewById(R.id.chart_coin_content_abb_name);
+            mCoinName = v.findViewById(R.id.chart_coin_content_name);
+            mCoinSubName = v.findViewById(R.id.chart_coin_content_abb_name);
         }
     }
 
     public static class MyChildViewHolder extends MyBaseViewHolder {
+        private TextView mExchange;
+        private TextView mPrice;
+        private TextView mDiffPercent;
+        private TextView mPremium;
+        private TextView mCurrencyUnit;
         public MyChildViewHolder(View v) {
             super(v);
+
+            mExchange = v.findViewById(R.id.chart_coin_detail_exchange_name);
+            mDiffPercent = v.findViewById(R.id.chart_coin_detail_diff_percent);
+            mPrice = v.findViewById(R.id.chart_coin_detail_price);
+            mPremium = v.findViewById(R.id.chart_coin_detail_premium);
+            mCurrencyUnit = v.findViewById(R.id.chart_coin_detail_currency_unit);
         }
     }
 
-    public ChartRecyclerViewAdapter(
-            RecyclerViewExpandableItemManager expandableItemManager,
-            ChartDataProvider dataProvider) {
+    public ChartRecyclerViewAdapter(RecyclerViewExpandableItemManager expandableItemManager, ChartDataProvider dataProvider) {
         mExpandableItemManager = expandableItemManager;
         mProvider = dataProvider;
         mItemViewOnClickListener = new View.OnClickListener() {
@@ -208,20 +219,13 @@ class ChartRecyclerViewAdapter extends AbstractExpandableItemAdapter<ChartRecycl
     @Override
     public void onBindGroupViewHolder(MyGroupViewHolder holder, int groupPosition, int viewType) {
         // group item
-        final ChartDataProvider.GroupData item = mProvider.getGroupItem(groupPosition);
+        final ChartAbstractDataProvider.CoinGroupData item = mProvider.getGroupItem(groupPosition);
 
         holder.itemView.setOnClickListener(mItemViewOnClickListener);
 
-        Context context = holder.mContainer.getContext();
-        if (context != null) {
-            context.getResources().getIdentifier(item.getResName(), "drawable", context.getPackageName());
-//            holder.mIcon.setImageResource(context.getResources().getIdentifier(item.getResName(), "drawable", context.getPackageName()));
-            holder.mIcon.setImageResource(R.drawable.btc2);
-        }
-
-        // set text
-        holder.mTextView.setText(item.getText());
-        holder.mSubNameView.setText(item.getSubName());
+        holder.mIcon.setImageResource(item.getIconResId());
+        holder.mCoinName.setText(item.getText());
+        holder.mCoinSubName.setText(item.getSubName());
 
         // set background resource (target view ID: container)
         final int dragState = holder.getDragStateFlags();
@@ -266,7 +270,7 @@ class ChartRecyclerViewAdapter extends AbstractExpandableItemAdapter<ChartRecycl
     @Override
     public void onBindChildViewHolder(MyChildViewHolder holder, int groupPosition, int childPosition, int viewType) {
         // child item
-        final ChartAbstractDataProvider.ChildData item = mProvider.getChildItem(groupPosition, childPosition);
+        final ChartAbstractDataProvider.CoinChildData item = mProvider.getChildItem(groupPosition, childPosition);
 
         // set listeners
         // (if the item is *pinned*, click event comes to the itemView)
@@ -274,8 +278,11 @@ class ChartRecyclerViewAdapter extends AbstractExpandableItemAdapter<ChartRecycl
         // (if the item is *not pinned*, click event comes to the mContainer)
         holder.mContainer.setOnClickListener(mSwipeableViewContainerOnClickListener);
 
-        // set text
-        holder.mTextView.setText(item.getText());
+        holder.mExchange.setText(item.getExchange());
+        holder.mPrice.setText(item.getPrice());
+        holder.mDiffPercent.setText(item.getDiffPercent());
+        holder.mPremium.setText(item.getPremium());
+        holder.mCurrencyUnit.setText(item.getCurrencyUnit());
 
         final int dragState = holder.getDragStateFlags();
         final int swipeState = holder.getSwipeStateFlags();
@@ -551,7 +558,7 @@ class ChartRecyclerViewAdapter extends AbstractExpandableItemAdapter<ChartRecycl
         protected void onPerformAction() {
             super.onPerformAction();
 
-            ChartAbstractDataProvider.GroupData item =
+            ChartAbstractDataProvider.CoinGroupData item =
                     mAdapter.mProvider.getGroupItem(mGroupPosition);
 
             if (!item.isPinned()) {
@@ -625,7 +632,7 @@ class ChartRecyclerViewAdapter extends AbstractExpandableItemAdapter<ChartRecycl
         protected void onPerformAction() {
             super.onPerformAction();
 
-            ChartAbstractDataProvider.GroupData item = mAdapter.mProvider.getGroupItem(mGroupPosition);
+            ChartAbstractDataProvider.CoinGroupData item = mAdapter.mProvider.getGroupItem(mGroupPosition);
             if (item.isPinned()) {
                 item.setPinned(false);
                 mAdapter.mExpandableItemManager.notifyGroupItemChanged(mGroupPosition);
@@ -657,7 +664,7 @@ class ChartRecyclerViewAdapter extends AbstractExpandableItemAdapter<ChartRecycl
         protected void onPerformAction() {
             super.onPerformAction();
 
-            ChartAbstractDataProvider.ChildData item =
+            ChartAbstractDataProvider.CoinChildData item =
                     mAdapter.mProvider.getChildItem(mGroupPosition, mChildPosition);
 
             if (!item.isPinned()) {
@@ -735,7 +742,7 @@ class ChartRecyclerViewAdapter extends AbstractExpandableItemAdapter<ChartRecycl
         protected void onPerformAction() {
             super.onPerformAction();
 
-            ChartAbstractDataProvider.ChildData item = mAdapter.mProvider.getChildItem(mGroupPosition, mChildPosition);
+            ChartAbstractDataProvider.CoinChildData item = mAdapter.mProvider.getChildItem(mGroupPosition, mChildPosition);
             if (item.isPinned()) {
                 item.setPinned(false);
                 mAdapter.mExpandableItemManager.notifyChildItemChanged(mGroupPosition, mChildPosition);

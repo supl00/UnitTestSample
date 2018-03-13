@@ -8,4 +8,30 @@
     <string name="tab_name_board">Board</string>
     <string name="tab_name_information">Information</string>
     <string name="tab_name_test">Test</string>
+
+    <string name="coin_name_btc">Bitcoin</string>
+    <string name="coin_name_eth">Ethereum</string>
+    <string name="coin_name_dash">Dash</string>
+    <string name="coin_name_ltc">Litecoin</string>
+    <string name="coin_name_etc">Ethereum Classic</string>
+    <string name="coin_name_xrp">Ripple</string>
+    <string name="coin_name_bch">Bitcoin Cash</string>
+    <string name="coin_name_xmr">Monero</string>
+    <string name="coin_name_qtum">Qtum</string>
+    <string name="coin_name_zec">ZCash</string>
+    <string name="coin_name_btg">Bitcoin Gold</string>
+    <string name="coin_name_eos">EOS</string>
+
+    <string name="coin_sub_name_btc">BTC</string>
+    <string name="coin_sub_name_eth">ETH</string>
+    <string name="coin_sub_name_dash">DASH</string>
+    <string name="coin_sub_name_ltc">LTC</string>
+    <string name="coin_sub_name_etc">ETC</string>
+    <string name="coin_sub_name_xrp">XRP</string>
+    <string name="coin_sub_name_bch">BCH</string>
+    <string name="coin_sub_name_xmr">XMR</string>
+    <string name="coin_sub_name_qtum">QTUM</string>
+    <string name="coin_sub_name_zec">ZEC</string>
+    <string name="coin_sub_name_btg">BTG</string>
+    <string name="coin_sub_name_eos">EOS</string>
 </resources>

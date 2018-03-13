@@ -10,8 +10,7 @@ public class DbSchema {
                 "(" +
                 Coin.KEY_COIN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
                 Coin.KEY_COIN_NAME + " TEXT NOT NULL, " +
-                Coin.KEY_COIN_ABB_NAME + " TEXT NOT NULL, " +
-                Coin.KEY_COIN_ICON + " TEXT NOT NULL, " +
+                Coin.KEY_COIN_SUB_NAME + " TEXT NOT NULL, " +
                 Coin.KEY_COIN_IS_VISIBLE + " INTEGER NOT NULL DEFAULT 1" +
                 ")";
 
@@ -32,8 +31,7 @@ public class DbSchema {
         public class Coin {
             public static final String KEY_COIN_ID = "coin_id";
             public static final String KEY_COIN_NAME = "coin_name";
-            public static final String KEY_COIN_ABB_NAME = "coin_abb_name";
-            public static final String KEY_COIN_ICON = "coin_icon";
+            public static final String KEY_COIN_SUB_NAME = "coin_abb_name";
             public static final String KEY_COIN_IS_VISIBLE = "coin_is_visible";
         }
 
