@@ -31,6 +31,7 @@ public class ClienServer extends BaseServer {
 
     @Override
     public String pageTag() {
+        Logger.d(TAG, "pageTag : " + currentPage);
         return "po=" + this.currentPage;
     }
 

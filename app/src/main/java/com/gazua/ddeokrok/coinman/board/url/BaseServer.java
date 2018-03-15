@@ -28,15 +28,15 @@ public abstract class BaseServer {
     protected int category = UrlBuilder.CATEGORY_COIN;
     protected int currentPage = 0;
 
-    public static <T extends BaseServer> T asServer(String server) throws IllegalArgumentException {
+    public static BaseServer asServer(String server) throws IllegalArgumentException {
         Logger.d(TAG, "asServer, server : " + server);
-        T baseServer;
+        BaseServer baseServer;
         switch (server) {
             case UrlBuilder.TARGET_SERVER_CLIEN:
-                baseServer = (T) new ClienServer();
+                baseServer = new ClienServer();
                 break;
             case UrlBuilder.TARGET_SERVER_BULLPEN:
-                baseServer = (T) new BullpenServer();
+                baseServer = new BullpenServer();
                 break;
             default:
                 throw new IllegalArgumentException("Target server not exist!!");
@@ -54,6 +54,7 @@ public abstract class BaseServer {
     }
 
     public BaseServer page(int page) {
+        Logger.d(TAG, "page : " + page);
         this.currentPage = page;
         return this;
     }

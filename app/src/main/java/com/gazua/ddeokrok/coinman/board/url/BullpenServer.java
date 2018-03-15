@@ -31,6 +31,7 @@ public class BullpenServer extends BaseServer {
 
     @Override
     public String pageTag() {
+        Logger.d(TAG, "pageTag : " + currentPage);
         return "p=" + (this.currentPage * 30 + 1);
     }
 

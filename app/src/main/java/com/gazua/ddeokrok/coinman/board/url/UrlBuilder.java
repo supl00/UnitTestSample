@@ -18,7 +18,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.internal.functions.Functions;
-import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -35,21 +34,21 @@ public class UrlBuilder {
 
     public static final int CATEGORY_COIN = 1;
 
-    private Observable<BaseServer> baseServers;
+    private List<BaseServer> baseServers;
 
-    private UrlBuilder(Observable<BaseServer> servers) {
+    private UrlBuilder(List<BaseServer> servers) {
         this.baseServers = servers;
     }
 
-    private static UrlBuilder build(Observable<BaseServer> servers) {
+    private static UrlBuilder build(List<BaseServer> servers) {
         return new UrlBuilder(servers);
     }
 
     public static UrlBuilder target(@NonNull String... targetServer) {
         return build(Observable.fromIterable(Arrays.asList(targetServer))
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .map(BaseServer::asServer));
+                .map(BaseServer::asServer)
+                .toList()
+                .blockingGet());
     }
 
     public String baseUrl(@NonNull BaseServer server) {
@@ -133,46 +132,45 @@ public class UrlBuilder {
 
     public void query(@NonNull Consumer<? super List<BoardData>> onSuccess, @NonNull Consumer<? super Throwable> onError, Action onTerminate) {
         final List<BoardData> boardDataList = new ArrayList<>();
-        this.baseServers.observeOn(Schedulers.io())
-                .forEach(baseServer -> {
-                    Logger.d(TAG, " query - base : " + baseUrl(baseServer) + ", total : " + totalUrl(baseServer));
-                    PageService pageService = ApiUtils.getRpJsoupService();
-                    pageService.selectContentGetSubList(totalUrl(baseServer))
-                            .enqueue(new Callback<Page>() {
-                                         @Override
-                                         public void onResponse(@NonNull Call<Page> call, @NonNull Response<Page> response) {
-                                             Logger.d(TAG, "res : " + response);
-                                             BaseServer.asBoardList(baseServer, response.body().getContent())
-                                                     .observeOn(AndroidSchedulers.mainThread())
-                                                     .doOnError(throwable -> {
-                                                         Logger.d(TAG, "onResponse, doOnError");
-                                                         onError.accept(throwable);
-                                                     })
-                                                     .doOnComplete(() -> {
-                                                         Logger.d(TAG, "onResponse, doOnComplete");
-                                                         onSuccess.accept(boardDataList);
-                                                     })
-                                                     .doOnTerminate(() -> {
-                                                         Logger.d(TAG, "onResponse, doOnTerminate");
-                                                         onTerminate.run();
-                                                     })
-                                                     .forEach(data -> {
-                                                         Logger.d(TAG, "onResponse, data : " + data.toString());
-                                                         boardDataList.add(data);
-                                                     });
-                                         }
-
-                                         @Override
-                                         public void onFailure(Call<Page> call, Throwable t) {
-                                             Logger.d(TAG, "onFailure : " + t);
-                                             try {
-                                                 onError.accept(t);
+        this.baseServers.forEach(baseServer -> {
+            Logger.d(TAG, " query - base : " + baseUrl(baseServer) + ", total : " + totalUrl(baseServer));
+            PageService pageService = ApiUtils.getRpJsoupService();
+            pageService.selectContentGetSubList(totalUrl(baseServer))
+                    .enqueue(new Callback<Page>() {
+                                 @Override
+                                 public void onResponse(@NonNull Call<Page> call, @NonNull Response<Page> response) {
+                                     Logger.d(TAG, "res : " + response);
+                                     BaseServer.asBoardList(baseServer, response.body().getContent())
+                                             .observeOn(AndroidSchedulers.mainThread())
+                                             .doOnError(throwable -> {
+                                                 Logger.d(TAG, "onResponse, doOnError");
+                                                 onError.accept(throwable);
+                                             })
+                                             .doOnComplete(() -> {
+                                                 Logger.d(TAG, "onResponse, doOnComplete");
+                                                 onSuccess.accept(boardDataList);
+                                             })
+                                             .doOnTerminate(() -> {
+                                                 Logger.d(TAG, "onResponse, doOnTerminate");
                                                  onTerminate.run();
-                                             } catch (Throwable e) {
-                                             }
-                                         }
+                                             })
+                                             .forEach(data -> {
+                                                 Logger.d(TAG, "onResponse, data : " + data.toString());
+                                                 boardDataList.add(data);
+                                             });
+                                 }
+
+                                 @Override
+                                 public void onFailure(Call<Page> call, Throwable t) {
+                                     Logger.d(TAG, "onFailure : " + t);
+                                     try {
+                                         onError.accept(t);
+                                         onTerminate.run();
+                                     } catch (Throwable e) {
                                      }
-                            );
-                });
+                                 }
+                             }
+                    );
+        });
     }
 }
