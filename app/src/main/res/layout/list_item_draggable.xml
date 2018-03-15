@@ -53,13 +53,13 @@
 
                         <TextView
                             style="@style/coinDetailExchangeViewStyle"
-                            android:id="@+id/chart_coin_detail_exchange_name"
+                            android:id="@+id/chart_group_coin_main_exchange"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
 
                         <TextView
                             style="@style/coinDetailExchangeViewStyle"
-                            android:id="@+id/chart_coin_detail_diff_percent"
+                            android:id="@+id/chart_group_coin_main_diff_percent"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
                     </LinearLayout>
@@ -77,14 +77,14 @@
 
                             <TextView
                                 style="@style/coinDetailStyle"
-                                android:id="@+id/chart_coin_detail_price"
+                                android:id="@+id/chart_group_coin_main_price"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="3" />
 
                             <TextView
                                 style="@style/coinDetailExchangeViewStyle"
-                                android:id="@+id/chart_coin_detail_currency_unit"
+                                android:id="@+id/chart_group_coin_main_currency_unit"
                                 android:layout_width="0dp"
                                 android:layout_height="19dp"
                                 android:layout_weight="2" />
@@ -97,7 +97,7 @@
 
                             <TextView
                                 style="@style/coinDetailStyle"
-                                android:id="@+id/chart_coin_detail_premium"
+                                android:id="@+id/chart_group_coin_main_premium"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="3" />

@@ -56,8 +56,8 @@ public class ChartLayoutManager implements RecyclerViewExpandableItemManager.OnG
 
         // drag & drop manager
         mRecyclerViewDragDropManager = new RecyclerViewDragDropManager();
-        mRecyclerViewDragDropManager.setDraggingItemShadowDrawable(
-                (NinePatchDrawable) ContextCompat.getDrawable(mContext, R.drawable.material_shadow_z3));
+        mRecyclerViewDragDropManager.setDraggingItemShadowDrawable((NinePatchDrawable) ContextCompat.getDrawable(mContext, R.drawable.material_shadow_z3));
+        mRecyclerViewDragDropManager.setCheckCanDropEnabled(true);
 
         // swipe manager
         mRecyclerViewSwipeManager = new RecyclerViewSwipeManager();

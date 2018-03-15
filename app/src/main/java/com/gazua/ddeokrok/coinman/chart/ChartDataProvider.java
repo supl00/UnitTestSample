@@ -43,9 +43,10 @@ public class ChartDataProvider extends ChartAbstractDataProvider {
                 final long groupId = cursor.getInt(cursor.getColumnIndex(DbSchema.Chart.Coin.KEY_COIN_ID));
                 final String groupText = cursor.getString(cursor.getColumnIndex(DbSchema.Chart.Coin.KEY_COIN_NAME));
 
-                final ConcreteCoinGroupData group = new ConcreteCoinGroupData(groupId, groupText);
+                final ConcreteCoinGroupData group = new ConcreteCoinGroupData(groupId);
+                group.setCoinName(groupText);
+                group.setCoinSubName(cursor.getString(cursor.getColumnIndex(DbSchema.Chart.Coin.KEY_COIN_SUB_NAME)));
                 group.setIconResId(CoinInfo.COIN.getIconResId(mContext.getResources(), groupText));
-                group.setSubName(cursor.getString(cursor.getColumnIndex(DbSchema.Chart.Coin.KEY_COIN_SUB_NAME)));
 
                 Cursor childCursor = mDbManager.getChildItem((int)groupId);
                 if (childCursor.moveToFirst()) {
@@ -67,6 +68,10 @@ public class ChartDataProvider extends ChartAbstractDataProvider {
                             coinData.setDiffPercent(diff);
                             coinData.setPremium(premium);
                             coinData.setCurrencyUnit(currencyUnit);
+
+                            if (children.size() == 0) {
+                                copyCoinData(group, coinData);
+                            }
 
                             children.add(coinData);
                         }
@@ -127,22 +132,18 @@ public class ChartDataProvider extends ChartAbstractDataProvider {
 
     @Override
     public void moveChildItem(int fromGroupPosition, int fromChildPosition, int toGroupPosition, int toChildPosition) {
-        if ((fromGroupPosition == toGroupPosition) && (fromChildPosition == toChildPosition)) {
+        if (fromGroupPosition != toGroupPosition || fromChildPosition == toChildPosition) {
             return;
         }
 
-        final Pair<CoinGroupData, List<CoinChildData>> fromGroup = mData.get(fromGroupPosition);
-        final Pair<CoinGroupData, List<CoinChildData>> toGroup = mData.get(toGroupPosition);
+        final Pair<CoinGroupData, List<CoinChildData>> group = mData.get(fromGroupPosition);
+        final ConcreteCoinChildData item = (ConcreteCoinChildData) group.second.remove(fromChildPosition);
 
-        final ConcreteCoinChildData item = (ConcreteCoinChildData) fromGroup.second.remove(fromChildPosition);
+        group.second.add(toChildPosition, item);
 
-        if (toGroupPosition != fromGroupPosition) {
-            // assign a new ID
-            final long newId = ((ConcreteCoinGroupData) toGroup.first).generateNewChildId();
-            item.setChildId(newId);
+        if (toChildPosition == 0 || fromChildPosition == 0) {
+            copyCoinData(group.first, (ConcreteCoinChildData)group.second.get(0));
         }
-
-        toGroup.second.add(toChildPosition, item);
     }
 
     @Override
@@ -226,18 +227,31 @@ public class ChartDataProvider extends ChartAbstractDataProvider {
         return RecyclerViewExpandableItemManager.getPackedPositionForChild(groupPosition, insertedPosition);
     }
 
-    public static final class ConcreteCoinGroupData extends CoinGroupData {
+    private void copyCoinData(CoinGroupData dst, ConcreteCoinChildData src) {
+        dst.setExchange(src.getExchange());
+        dst.setPrice(src.getPrice());
+        dst.setDiffPercent(src.getDiffPercent());
+        dst.setCurrencyUnit(src.getCurrencyUnit());
+        dst.setPremium(src.getPremium());
+    }
 
+    public static final class ConcreteCoinGroupData extends CoinGroupData {
         private final long mId;
+
         private String mCoinName;
         private String mCoinSubName;
         private long mNextChildId;
         private int mIconResId;
         private boolean mPinned;
 
-        ConcreteCoinGroupData(long id, String name) {
+        private String mMainExchange;
+        private String mMainPrice;
+        private String mMainDiffPercent;
+        private String mMainPremium;
+        private String mMainCurrencyUnit;
+
+        ConcreteCoinGroupData(long id) {
             mId = id;
-            mCoinName = name;
             mNextChildId = 0;
         }
 
@@ -247,12 +261,22 @@ public class ChartDataProvider extends ChartAbstractDataProvider {
         }
 
         @Override
-        public void setSubName(String str) {
+        public void setCoinName(String str) {
+            mCoinName = str;
+        }
+
+        @Override
+        public String getCoinName() {
+            return mCoinName;
+        }
+
+        @Override
+        public void setCoinSubName(String str) {
             mCoinSubName = str;
         }
 
         @Override
-        public String getSubName() {
+        public String getCoinSubName() {
             return mCoinSubName;
         }
 
@@ -264,11 +288,6 @@ public class ChartDataProvider extends ChartAbstractDataProvider {
         @Override
         public int getIconResId() {
             return mIconResId;
-        }
-
-        @Override
-        public String getText() {
-            return mCoinName;
         }
 
         @Override
@@ -286,11 +305,61 @@ public class ChartDataProvider extends ChartAbstractDataProvider {
             mNextChildId += 1;
             return id;
         }
+
+        @Override
+        public void setExchange(String exchange) {
+            mMainExchange = exchange;
+        }
+
+        @Override
+        public String getExchange() {
+            return mMainExchange;
+        }
+
+        @Override
+        public void setPrice(String price) {
+            mMainPrice = price;
+        }
+
+        @Override
+        public String getPrice() {
+            return mMainPrice;
+        }
+
+        @Override
+        public void setDiffPercent(String diff) {
+            mMainDiffPercent = diff;
+        }
+
+        @Override
+        public String getDiffPercent() {
+            return mMainDiffPercent;
+        }
+
+        @Override
+        public void setPremium(String premium) {
+            mMainPremium = premium;
+        }
+
+        @Override
+        public String getPremium() {
+            return mMainPremium;
+        }
+
+        @Override
+        public void setCurrencyUnit(String currencyUnit) {
+            mMainCurrencyUnit = currencyUnit;
+        }
+
+        @Override
+        public String getCurrencyUnit() {
+            return mMainCurrencyUnit;
+        }
     }
 
     public static final class ConcreteCoinChildData extends CoinChildData {
         private long mId;
-        private String mText;
+
         private boolean mPinned;
 
         private String mExchange;
@@ -356,11 +425,6 @@ public class ChartDataProvider extends ChartAbstractDataProvider {
         @Override
         public String getCurrencyUnit() {
             return mCurrencyUnit;
-        }
-
-        @Override
-        public String getText() {
-            return mText;
         }
 
         @Override
