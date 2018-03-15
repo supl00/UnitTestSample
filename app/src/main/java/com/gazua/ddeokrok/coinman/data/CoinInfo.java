@@ -1,8 +1,9 @@
 package com.gazua.ddeokrok.coinman.data;
 
-import android.content.res.Resources;
-import com.gazua.ddeokrok.coinman.R;
 
+import android.content.res.Resources;
+
+import com.gazua.ddeokrok.coinman.R;
 
 public class CoinInfo {
     public enum EXCHANGE {
@@ -111,208 +112,209 @@ public class CoinInfo {
     public enum COIN {
         BTC {
             @Override
-            public String getName() {
-                return new String("비트코인");
+            public String getName(Resources res) {
+                return res.getString(R.string.coin_name_btc);
             }
 
             @Override
-            public String getAbbName() {
-                return new String("btc");
+            public String getSubName(Resources res) {
+                return res.getString(R.string.coin_sub_name_btc);
             }
 
             @Override
-            public String getIconResName(Resources res) {
-                return res.getResourceEntryName(R.drawable.btc2);
+            public int getResId() {
+                return R.drawable.btc2;
             }
         },
         ETH {
             @Override
-            public String getName() {
-                return new String("이더리움");
+            public String getName(Resources res) {
+                return res.getString(R.string.coin_name_eth);
             }
 
             @Override
-            public String getAbbName() {
-                return new String("eth");
+            public String getSubName(Resources res) {
+                return res.getString(R.string.coin_sub_name_eth);
             }
 
             @Override
-            public String getIconResName(Resources res) {
-                return res.getResourceEntryName(R.drawable.eth2);
+            public int getResId() {
+                return R.drawable.eth2;
             }
         },
         DASH {
             @Override
-            public String getName() {
-                return new String("대쉬");
+            public String getName(Resources res) {
+                return res.getString(R.string.coin_name_dash);
             }
 
             @Override
-            public String getAbbName() {
-                return new String("dash");
+            public String getSubName(Resources res) {
+                return res.getString(R.string.coin_sub_name_dash);
             }
 
             @Override
-            public String getIconResName(Resources res) {
-                return res.getResourceEntryName(R.drawable.dash);
+            public int getResId() {
+                return R.drawable.dash;
             }
         },
         LTC {
             @Override
-            public String getName() {
-                return new String("라이트코인");
+            public String getName(Resources res) {
+                return res.getString(R.string.coin_name_ltc);
             }
 
             @Override
-            public String getAbbName() {
-                return new String("ltc");
+            public String getSubName(Resources res) {
+                return res.getString(R.string.coin_sub_name_ltc);
             }
 
             @Override
-            public String getIconResName(Resources res) {
-                return res.getResourceEntryName(R.drawable.ltc);
+            public int getResId() {
+                return R.drawable.ltc;
             }
         },
         ETC {
             @Override
-            public String getName() {
-                return new String("이더리움 클래식");
+            public String getName(Resources res) {
+                return res.getString(R.string.coin_name_etc);
             }
 
             @Override
-            public String getAbbName() {
-                return new String("etc");
+            public String getSubName(Resources res) {
+                return res.getString(R.string.coin_sub_name_etc);
             }
 
             @Override
-            public String getIconResName(Resources res) {
-                return res.getResourceEntryName(R.drawable.etc);
+            public int getResId() {
+                return R.drawable.etc;
             }
         },
         XRP {
             @Override
-            public String getName() {
-                return new String("리플");
+            public String getName(Resources res) {
+                return res.getString(R.string.coin_name_xrp);
             }
 
             @Override
-            public String getAbbName() {
-                return new String("xrp");
+            public String getSubName(Resources res) {
+                return res.getString(R.string.coin_sub_name_xrp);
             }
 
             @Override
-            public String getIconResName(Resources res) {
-                return res.getResourceEntryName(R.drawable.xrp);
+            public int getResId() {
+                return R.drawable.xrp;
             }
         },
         BCH {
             @Override
-            public String getName() {
-                return new String("비트코인캐쉬");
+            public String getName(Resources res) {
+                return res.getString(R.string.coin_name_bch);
             }
 
             @Override
-            public String getAbbName() {
-                return new String("bch");
+            public String getSubName(Resources res) {
+                return res.getString(R.string.coin_sub_name_bch);
             }
 
             @Override
-            public String getIconResName(Resources res) {
-                return res.getResourceEntryName(R.drawable.bch);
+            public int getResId() {
+                return R.drawable.bch;
             }
         },
         XMR {
             @Override
-            public String getName() {
-                return new String("모네로");
+            public String getName(Resources res) {
+                return res.getString(R.string.coin_name_xmr);
             }
 
             @Override
-            public String getAbbName() {
-                return new String("xmr");
+            public String getSubName(Resources res) {
+                return res.getString(R.string.coin_sub_name_xmr);
             }
 
             @Override
-            public String getIconResName(Resources res) {
-                return res.getResourceEntryName(R.drawable.xmr);
+            public int getResId() {
+                return R.drawable.xmr;
             }
         },
         QTUM {
             @Override
-            public String getName() {
-                return new String("퀀텀");
+            public String getName(Resources res) {
+                return res.getString(R.string.coin_name_qtum);
             }
 
             @Override
-            public String getAbbName() {
-                return new String("qtum");
+            public String getSubName(Resources res) {
+                return res.getString(R.string.coin_sub_name_qtum);
             }
 
             @Override
-            public String getIconResName(Resources res) {
-                return res.getResourceEntryName(R.drawable.qtum);
+            public int getResId() {
+                return R.drawable.qtum;
             }
         },
         ZEC {
             @Override
-            public String getName() {
-                return new String("제트코인");
+            public String getName(Resources res) {
+                return res.getString(R.string.coin_name_zec);
             }
 
             @Override
-            public String getAbbName() {
-                return new String("zec");
+            public String getSubName(Resources res) {
+                return res.getString(R.string.coin_sub_name_zec);
             }
 
             @Override
-            public String getIconResName(Resources res) {
-                return res.getResourceEntryName(R.drawable.zec);
+            public int getResId() {
+                return R.drawable.zec;
             }
         },
         BTG {
             @Override
-            public String getName() {
-                return new String("비트코인골드");
+            public String getName(Resources res) {
+                return res.getString(R.string.coin_name_btg);
             }
 
             @Override
-            public String getAbbName() {
-                return new String("btg");
+            public String getSubName(Resources res) {
+                return res.getString(R.string.coin_sub_name_btg);
             }
 
             @Override
-            public String getIconResName(Resources res) {
-                return res.getResourceEntryName(R.drawable.btg);
+            public int getResId() {
+                return R.drawable.btg;
             }
         },
         EOS {
             @Override
-            public String getName() {
-                return new String("이오스");
+            public String getName(Resources res) {
+                return res.getString(R.string.coin_name_eos);
             }
 
             @Override
-            public String getAbbName() {
-                return new String("eos");
+            public String getSubName(Resources res) {
+                return res.getString(R.string.coin_sub_name_eos);
             }
 
             @Override
-            public String getIconResName(Resources res) {
-                return res.getResourceEntryName(R.drawable.eos);
+            public int getResId() {
+                return R.drawable.eos;
             }
         };
 
-        public abstract String getName();
-        public abstract String getAbbName();
-        public abstract String getIconResName(Resources res);
+        public abstract String getName(Resources res);
+        public abstract String getSubName(Resources res);
+        public abstract int getResId();
 
-        static COIN fromName(String name) {
+        public static int getIconResId(Resources res, String name) {
             for (COIN coin : values()) {
-                if (coin.getAbbName().compareTo(name) == 0) {
-                    return coin;
+                if (coin.getName(res).compareTo(name) == 0) {
+                    return coin.getResId();
                 }
             }
-            throw new IllegalArgumentException();
+
+            return 0;
         }
     }
 }

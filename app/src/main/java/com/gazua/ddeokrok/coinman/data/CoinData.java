@@ -1,12 +1,9 @@
 package com.gazua.ddeokrok.coinman.data;
 
 
-import android.graphics.drawable.Drawable;
-
 public class CoinData {
     private String mCoinName;
-    private String mCoinAbbName;
-    private String mUniqueName;
+    private String mCoinSubName;
     private String mExchange;
 
     private int mPrice;
@@ -14,14 +11,7 @@ public class CoinData {
     private float mPremium = 0.0f;
     private String mCurrencyUnit = "KRW";
 
-    private String mIconResName;
-
-    public CoinData(String coinName, String exchange) {
-        mUniqueName = coinName + exchange;
-    }
-
-    public String getUniqueName() {
-        return mUniqueName;
+    public CoinData() {
     }
 
     public void setExchange(String str) {
@@ -40,12 +30,12 @@ public class CoinData {
         return mCoinName;
     }
 
-    public void setAbbName(String str) {
-        mCoinAbbName = str;
+    public void setSubName(String str) {
+        mCoinSubName = str;
     }
 
-    public String getAbbName() {
-        return mCoinAbbName;
+    public String getSubName() {
+        return mCoinSubName;
     }
 
     public void setPrice(int price) {
@@ -78,13 +68,5 @@ public class CoinData {
 
     public float getPremium() {
         return mPremium;
-    }
-
-    public void setIconResName(String name) {
-        mIconResName = name;
-    }
-
-    public String getIconResName() {
-        return mIconResName;
     }
 }

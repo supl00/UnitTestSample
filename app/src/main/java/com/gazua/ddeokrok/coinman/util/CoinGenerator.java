@@ -1,7 +1,6 @@
 package com.gazua.ddeokrok.coinman.util;
 
 import android.content.Context;
-import android.content.res.Resources;
 
 
 import com.gazua.ddeokrok.coinman.data.CoinData;
@@ -26,15 +25,14 @@ public class CoinGenerator {
 
 //        int count = getRandomNumber(5, 10);
         for (int i = 0; i < 8; i++) {
-            CoinData data = new CoinData(CoinInfo.COIN.values()[index].getName(), CoinInfo.EXCHANGE.values()[i].getName());
-            data.setName(CoinInfo.COIN.values()[index].getName());
-            data.setAbbName(CoinInfo.COIN.values()[index].getAbbName());
+            CoinData data = new CoinData();
+            data.setName(CoinInfo.COIN.values()[index].getName(context.getResources()));
+            data.setSubName(CoinInfo.COIN.values()[index].getSubName(context.getResources()));
             data.setDiffPercent(getRandomRatio(0, 70));
             data.setPremium(getRandomRatio(0, 70));
             data.setExchange(CoinInfo.EXCHANGE.values()[i].getName());
             data.setCurrencyUnit(CoinInfo.EXCHANGE.values()[i].isUSDUnitType() ? "USD" : "KRW");
             data.setPrice(getRandomNumber(10000, 30000000));
-            data.setIconResName(CoinInfo.COIN.values()[index].getIconResName(context.getResources()));
             list.add(data);
         }
 
@@ -46,6 +44,7 @@ public class CoinGenerator {
     }
 
     private static float getRandomRatio(float min,float max) {
-        return (max - min) * (new Random()).nextFloat() + min;
+        float ratio = (max - min) * (new Random()).nextFloat() + min;
+        return Math.round(ratio * 100f) / 100f;
     }
 }

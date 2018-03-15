@@ -7,4 +7,17 @@
     <string name="tab_name_chart">차트</string>
     <string name="tab_name_board">게시판</string>
     <string name="tab_name_information">정보</string>
+
+    <string name="coin_name_btc">비트코인</string>
+    <string name="coin_name_eth">이더리움</string>
+    <string name="coin_name_dash">대시</string>
+    <string name="coin_name_ltc">라이트코인</string>
+    <string name="coin_name_etc">이더리움클래식</string>
+    <string name="coin_name_xrp">리플</string>
+    <string name="coin_name_bch">비트코인캐시</string>
+    <string name="coin_name_xmr">모네로</string>
+    <string name="coin_name_qtum">퀀텀</string>
+    <string name="coin_name_zec">제트캐시</string>
+    <string name="coin_name_btg">비트코인골드</string>
+    <string name="coin_name_eos">이오스</string>
 </resources>

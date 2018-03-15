@@ -1,19 +1,3 @@
-/*
- *    Copyright (C) 2015 Haruki Hasegawa
- *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
- *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
- */
-
 package com.gazua.ddeokrok.coinman.chart;
 
 public abstract class ChartAbstractDataProvider {
@@ -26,24 +10,33 @@ public abstract class ChartAbstractDataProvider {
         public abstract boolean isPinned();
     }
 
-    public static abstract class GroupData extends BaseData {
-        public abstract boolean isSectionHeader();
+    public static abstract class CoinGroupData extends BaseData {
         public abstract long getGroupId();
         public abstract void setSubName(String str);
         public abstract String getSubName();
-        public abstract void setResName(String str);
-        public abstract String getResName();
+        public abstract void setIconResId(int id);
+        public abstract int getIconResId();
     }
 
-    public static abstract class ChildData extends BaseData {
+    public static abstract class CoinChildData extends BaseData {
         public abstract long getChildId();
+        public abstract void setExchange(String exchange);
+        public abstract String getExchange();
+        public abstract void setPrice(String price);
+        public abstract String getPrice();
+        public abstract void setDiffPercent(String diff);
+        public abstract String getDiffPercent();
+        public abstract void setPremium(String premium);
+        public abstract String getPremium();
+        public abstract void setCurrencyUnit(String currencyUnit);
+        public abstract String getCurrencyUnit();
     }
 
     public abstract int getGroupCount();
     public abstract int getChildCount(int groupPosition);
 
-    public abstract GroupData getGroupItem(int groupPosition);
-    public abstract ChildData getChildItem(int groupPosition, int childPosition);
+    public abstract CoinGroupData getGroupItem(int groupPosition);
+    public abstract CoinChildData getChildItem(int groupPosition, int childPosition);
 
     public abstract void moveGroupItem(int fromGroupPosition, int toGroupPosition);
     public abstract void moveChildItem(int fromGroupPosition, int fromChildPosition, int toGroupPosition, int toChildPosition);

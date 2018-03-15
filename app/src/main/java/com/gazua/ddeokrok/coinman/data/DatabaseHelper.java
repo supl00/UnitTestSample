@@ -5,18 +5,15 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.os.Environment;
 import android.util.Log;
-
-import java.io.File;
 
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "DatabaseHelper";
 
     // Database Info
-    private static final String DATABASE_NAME = "coin_man_database.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final String DATABASE_NAME = "coin_man_database_2.db";
+    private static final int DATABASE_VERSION = 2;
 
     private static DatabaseHelper sInstance;
 
@@ -63,8 +60,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         try {
             ContentValues coinContent = new ContentValues();
             coinContent.put(DbSchema.Chart.Coin.KEY_COIN_NAME, coin.getName());
-            coinContent.put(DbSchema.Chart.Coin.KEY_COIN_ABB_NAME, coin.getAbbName());
-            coinContent.put(DbSchema.Chart.Coin.KEY_COIN_ICON, coin.getIconResName());
+            coinContent.put(DbSchema.Chart.Coin.KEY_COIN_SUB_NAME, coin.getSubName());
 
             ContentValues exchangeContent = new ContentValues();
             exchangeContent.put(DbSchema.Chart.Exchange.KEY_EXCHANGE_NAME, coin.getExchange());
@@ -170,11 +166,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         };
 
         String whereclause = DbSchema.Chart.Coin.KEY_COIN_NAME + "=? AND " +
-                DbSchema.Chart.Coin.KEY_COIN_ABB_NAME + "=?";
+                DbSchema.Chart.Coin.KEY_COIN_SUB_NAME + "=?";
 
         String[] whereargs = new String[] {
                 coin.getName(),
-                coin.getAbbName()
+                coin.getSubName()
         };
 
         try {

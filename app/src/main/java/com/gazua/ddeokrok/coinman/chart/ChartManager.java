@@ -2,6 +2,7 @@ package com.gazua.ddeokrok.coinman.chart;
 
 
 import android.database.Cursor;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -20,18 +21,30 @@ public class ChartManager {
 
     private View mRootLayout;
 
-    public ChartManager(View rootLayout) {
+    public ChartManager(View rootLayout, Bundle savedInstanceState) {
         mRootLayout = rootLayout;
 
-        mLayoutManager = new ChartLayoutManager();
-        mLayoutManager.setParent(mRootLayout);
+        mLayoutManager = new ChartLayoutManager(rootLayout, savedInstanceState);
 
         mDbManager = new ChartDbManager(mRootLayout.getContext());
 
         mLoader = new ChartLoader(mRootLayout.getContext());
-        mLoader.setLoaderListener(cursor -> mLayoutManager.addOrUpdateLayout(cursor));
+//        mLoader.setLoaderListener(cursor -> mLayoutManager.addOrUpdateLayout(cursor));
 
         initTestLayout(rootLayout);
+    }
+
+    public void close() {
+        if (mLayoutManager != null) {
+            mLayoutManager.close();
+            mLayoutManager = null;
+        }
+    }
+
+    public void saveInstanceState(Bundle outState) {
+        if (mLayoutManager != null) {
+            mLayoutManager.saveInstanceState(outState);
+        }
     }
 
     private void initTestLayout(View v) {
@@ -58,20 +71,20 @@ public class ChartManager {
                 Toast.makeText(mRootLayout.getContext(), "Expand", Toast.LENGTH_LONG).show();
                 if (mDbManager != null && mLayoutManager != null) {
                     mDbManager.showAllExchange();
-                    mLayoutManager.addOrUpdateLayout(mDbManager.getAllItem());
+//                    mLayoutManager.addOrUpdateLayout(mDbManager.getAllItem());
                 }
             } else if (id == R.id.chart_test_collapse) {
                 Toast.makeText(mRootLayout.getContext(), "Collpase", Toast.LENGTH_LONG).show();
                 if (mDbManager != null && mLayoutManager != null) {
                     mDbManager.hideAllExchange();
-                    mLayoutManager.addOrUpdateLayout(mDbManager.getAllItem());
+//                    mLayoutManager.addOrUpdateLayout(mDbManager.getAllItem());
                 }
 
             } else if (id == R.id.chart_test_edit) {
                 Toast.makeText(mRootLayout.getContext(), "Edit", Toast.LENGTH_LONG).show();
                 if (mLayoutManager != null) {
-                    mLayoutManager.setEnableEditMode(!mLayoutManager.isEditModeEnabled());
-                    mLayoutManager.addOrUpdateLayout(mDbManager.getAllItem());
+//                    mLayoutManager.setEnableEditMode(!mLayoutManager.isEditModeEnabled());
+//                    mLayoutManager.addOrUpdateLayout(mDbManager.getAllItem());
                 }
             } else if (id == R.id.chart_test_delete_all) {
                 Toast.makeText(mRootLayout.getContext(), "Delete All", Toast.LENGTH_LONG).show();
