@@ -16,7 +16,6 @@
 
 package com.gazua.ddeokrok.coinman.chart;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -112,13 +111,24 @@ class ChartRecyclerViewAdapter extends AbstractExpandableItemAdapter<ChartRecycl
         private ImageView mIcon;
         private TextView mCoinName;
         private TextView mCoinSubName;
+        private TextView mMainExchange;
+        private TextView mMainPrice;
+        private TextView mMainDiffPercent;
+        private TextView mMainCurrencyUnit;
+        private TextView mMainPremium;
+
 
         public MyGroupViewHolder(View v) {
             super(v);
             mIndicator = v.findViewById(R.id.indicator);
-            mIcon = v.findViewById(R.id.chart_coin_content_icon);
+            mIcon = v.findViewById(R.id.chart_group_coin_icon);
             mCoinName = v.findViewById(R.id.chart_coin_content_name);
-            mCoinSubName = v.findViewById(R.id.chart_coin_content_abb_name);
+            mCoinSubName = v.findViewById(R.id.chart_group_coin_sub_name);
+            mMainExchange = v.findViewById(R.id.chart_group_coin_main_exchange);
+            mMainPrice = v.findViewById(R.id.chart_group_coin_main_price);
+            mMainDiffPercent = v.findViewById(R.id.chart_group_coin_main_diff_percent);
+            mMainCurrencyUnit = v.findViewById(R.id.chart_group_coin_main_currency_unit);
+            mMainPremium = v.findViewById(R.id.chart_group_coin_main_premium);
         }
     }
 
@@ -131,11 +141,11 @@ class ChartRecyclerViewAdapter extends AbstractExpandableItemAdapter<ChartRecycl
         public MyChildViewHolder(View v) {
             super(v);
 
-            mExchange = v.findViewById(R.id.chart_coin_detail_exchange_name);
-            mDiffPercent = v.findViewById(R.id.chart_coin_detail_diff_percent);
-            mPrice = v.findViewById(R.id.chart_coin_detail_price);
-            mPremium = v.findViewById(R.id.chart_coin_detail_premium);
-            mCurrencyUnit = v.findViewById(R.id.chart_coin_detail_currency_unit);
+            mExchange = v.findViewById(R.id.chart_group_coin_main_exchange);
+            mDiffPercent = v.findViewById(R.id.chart_group_coin_main_diff_percent);
+            mPrice = v.findViewById(R.id.chart_group_coin_main_price);
+            mPremium = v.findViewById(R.id.chart_group_coin_main_premium);
+            mCurrencyUnit = v.findViewById(R.id.chart_group_coin_main_currency_unit);
         }
     }
 
@@ -224,8 +234,12 @@ class ChartRecyclerViewAdapter extends AbstractExpandableItemAdapter<ChartRecycl
         holder.itemView.setOnClickListener(mItemViewOnClickListener);
 
         holder.mIcon.setImageResource(item.getIconResId());
-        holder.mCoinName.setText(item.getText());
-        holder.mCoinSubName.setText(item.getSubName());
+        holder.mCoinName.setText(item.getCoinName());
+        holder.mCoinSubName.setText(item.getCoinSubName());
+        holder.mMainExchange.setText(item.getExchange());
+        holder.mMainPrice.setText(item.getPrice());
+        holder.mMainDiffPercent.setText(item.getDiffPercent());
+        holder.mMainCurrencyUnit.setText(item.getCurrencyUnit());
 
         // set background resource (target view ID: container)
         final int dragState = holder.getDragStateFlags();
@@ -379,7 +393,7 @@ class ChartRecyclerViewAdapter extends AbstractExpandableItemAdapter<ChartRecycl
 
     @Override
     public boolean onCheckChildCanDrop(int draggingGroupPosition, int draggingChildPosition, int dropGroupPosition, int dropChildPosition) {
-        return true;
+        return draggingGroupPosition == dropGroupPosition;
     }
 
     @Override
