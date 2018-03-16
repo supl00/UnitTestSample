@@ -3,6 +3,7 @@ package com.gazua.ddeokrok.coinman.board;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import com.bumptech.glide.Glide;
 import com.gazua.ddeokrok.coinman.R;
 import com.gazua.ddeokrok.coinman.board.data.BoardData;
 import com.gazua.ddeokrok.coinman.common.WebViewActivity;
+import com.thefinestartist.finestwebview.FinestWebView;
 
 import java.util.List;
 import java.util.Objects;
@@ -42,9 +44,10 @@ public class BoardRecyclerViewAdapter extends RecyclerView.Adapter<BoardRecycler
         BoardData data = this.datas.get(position);
         holder.update(data);
         holder.setOnItemClickListener(v -> {
-            Intent intent = new Intent(holder.itemView.getContext(), WebViewActivity.class);
-            intent.putExtra("url", data.getLinkUrl());
-            holder.itemView.getContext().startActivity(intent);
+            new FinestWebView.Builder(holder.itemView.getContext()).show(data.getLinkUrl());
+//            Intent intent = new Intent(holder.itemView.getContext(), WebViewActivity.class);
+//            intent.putExtra("url", data.getLinkUrl());
+//            holder.itemView.getContext().startActivity(intent);
         });
     }
 
@@ -78,7 +81,7 @@ public class BoardRecyclerViewAdapter extends RecyclerView.Adapter<BoardRecycler
             this.userImage.setImageDrawable(null);
 
             Maybe.fromCallable(data::getUserImage)
-                    .filter(Objects::nonNull)
+                    .filter(s -> !TextUtils.isEmpty(s))
                     .subscribe(imageUri -> Glide.with(itemView.getContext()).load(imageUri).into(this.userImage));
         }
 
