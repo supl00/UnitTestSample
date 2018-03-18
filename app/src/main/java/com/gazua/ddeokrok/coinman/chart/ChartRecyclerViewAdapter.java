@@ -43,6 +43,7 @@ import com.gazua.ddeokrok.coinman.widget.advrecyclerview.swipeable.action.SwipeR
 import com.gazua.ddeokrok.coinman.widget.advrecyclerview.utils.AbstractDraggableSwipeableItemViewHolder;
 import com.gazua.ddeokrok.coinman.widget.advrecyclerview.utils.AbstractExpandableItemAdapter;
 import com.gazua.ddeokrok.coinman.widget.advrecyclerview.utils.RecyclerViewAdapterUtils;
+import com.gazua.ddeokrok.coinman.widget.advtextview.base.HTextView;
 
 class ChartRecyclerViewAdapter extends AbstractExpandableItemAdapter<ChartRecyclerViewAdapter.MyGroupViewHolder, ChartRecyclerViewAdapter.MyChildViewHolder>
         implements ExpandableDraggableItemAdapter<ChartRecyclerViewAdapter.MyGroupViewHolder, ChartRecyclerViewAdapter.MyChildViewHolder>,
@@ -237,9 +238,10 @@ class ChartRecyclerViewAdapter extends AbstractExpandableItemAdapter<ChartRecycl
         holder.mCoinName.setText(item.getCoinName());
         holder.mCoinSubName.setText(item.getCoinSubName());
         holder.mMainExchange.setText(item.getExchange());
-        holder.mMainPrice.setText(item.getPrice());
-        holder.mMainDiffPercent.setText(item.getDiffPercent());
+        ((HTextView)holder.mMainPrice).animateText(item.getPrice());
+        ((HTextView)holder.mMainDiffPercent).animateText(item.getDiffPercent());
         holder.mMainCurrencyUnit.setText(item.getCurrencyUnit());
+        ((HTextView)holder.mMainPremium).animateText(item.getPremium());
 
         // set background resource (target view ID: container)
         final int dragState = holder.getDragStateFlags();

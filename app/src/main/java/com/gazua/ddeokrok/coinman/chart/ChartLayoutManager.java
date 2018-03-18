@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -35,13 +36,26 @@ public class ChartLayoutManager implements RecyclerViewExpandableItemManager.OnG
     private RecyclerViewSwipeManager mRecyclerViewSwipeManager;
     private RecyclerViewTouchActionGuardManager mRecyclerViewTouchActionGuardManager;
 
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+
     private ChartDataProvider mProvider;
     private Context mContext;
 
+    private LayoutActionListener mLayoutActionListener;
+    interface LayoutActionListener {
+        void onRequestRefresh();
+    }
+
     public ChartLayoutManager(View parent, Bundle savedInstanceState) {
         mContext = parent.getContext();
-        //noinspection ConstantConditions
         mRecyclerView = parent.findViewById(R.id.recycler_view);
+        mSwipeRefreshLayout = parent.findViewById(R.id.swipe_refresh_layout);
+        mSwipeRefreshLayout.setOnRefreshListener(() -> {
+            if (mLayoutActionListener != null) {
+                mLayoutActionListener.onRequestRefresh();
+            }
+        });
+
         mLayoutManager = new LinearLayoutManager(parent.getContext());
 
         final Parcelable eimSavedState = (savedInstanceState != null) ? savedInstanceState.getParcelable(SAVED_STATE_EXPANDABLE_ITEM_MANAGER) : null;
@@ -121,7 +135,6 @@ public class ChartLayoutManager implements RecyclerViewExpandableItemManager.OnG
         }
         mRecyclerView.addItemDecoration(new SimpleListDividerDecorator(ContextCompat.getDrawable(mContext, R.drawable.list_divider_h), true));
 
-
         // NOTE:
         // The initialization order is very important! This order determines the priority of touch event handling.
         //
@@ -130,6 +143,10 @@ public class ChartLayoutManager implements RecyclerViewExpandableItemManager.OnG
         mRecyclerViewSwipeManager.attachRecyclerView(mRecyclerView);
         mRecyclerViewDragDropManager.attachRecyclerView(mRecyclerView);
         mRecyclerViewExpandableItemManager.attachRecyclerView(mRecyclerView);
+    }
+
+    public void setLayoutActionListener(LayoutActionListener listener) {
+        mLayoutActionListener = listener;
     }
 
     public void close() {
@@ -205,6 +222,13 @@ public class ChartLayoutManager implements RecyclerViewExpandableItemManager.OnG
         }
 
         return mProvider;
+    }
+
+    public void notifyItemChanged() {
+        mAdapter.notifyDataSetChanged();
+        if (mSwipeRefreshLayout.isRefreshing()) {
+            mSwipeRefreshLayout.setRefreshing(false);
+        }
     }
 
     public void notifyGroupItemRestored(int groupPosition) {

@@ -6,9 +6,9 @@ public class CoinData {
     private String mCoinSubName;
     private String mExchange;
 
-    private int mPrice;
-    private float mDiffPercent = 0.0f;
-    private float mPremium = 0.0f;
+    private String mPrice;
+    private String mDiffPercent;
+    private String mPremium;
     private String mCurrencyUnit = "KRW";
 
     public CoinData() {
@@ -38,11 +38,11 @@ public class CoinData {
         return mCoinSubName;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(String price) {
         mPrice = price;
     }
 
-    public int getPrice() {
+    public String getPrice() {
         return mPrice;
     }
 
@@ -54,19 +54,19 @@ public class CoinData {
         return mCurrencyUnit;
     }
 
-    public void setDiffPercent(float percent) {
+    public void setDiffPercent(String percent) {
         mDiffPercent = percent;
     }
 
-    public float getDiffPercent() {
+    public String getDiffPercent() {
         return mDiffPercent;
     }
 
-    public void setPremium(float premium) {
+    public void setPremium(String premium) {
         mPremium = premium;
     }
 
-    public float getPremium() {
+    public String getPremium() {
         return mPremium;
     }
 }

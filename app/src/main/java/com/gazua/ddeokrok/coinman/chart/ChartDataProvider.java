@@ -36,54 +36,7 @@ public class ChartDataProvider extends ChartAbstractDataProvider {
 
         mData = new LinkedList<>();
 
-        Cursor cursor = mDbManager.getGroupItem();
-
-        if (cursor.moveToFirst()) {
-            while (!cursor.isAfterLast()) {
-                final long groupId = cursor.getInt(cursor.getColumnIndex(DbSchema.Chart.Coin.KEY_COIN_ID));
-                final String groupText = cursor.getString(cursor.getColumnIndex(DbSchema.Chart.Coin.KEY_COIN_NAME));
-
-                final ConcreteCoinGroupData group = new ConcreteCoinGroupData(groupId);
-                group.setCoinName(groupText);
-                group.setCoinSubName(cursor.getString(cursor.getColumnIndex(DbSchema.Chart.Coin.KEY_COIN_SUB_NAME)));
-                group.setIconResId(CoinInfo.COIN.getIconResId(mContext.getResources(), groupText));
-
-                Cursor childCursor = mDbManager.getChildItem((int)groupId);
-                if (childCursor.moveToFirst()) {
-                    final List<CoinChildData> children = new ArrayList<>();
-                    while (!childCursor.isAfterLast()) {
-                        final long childId = group.generateNewChildId();
-
-                        int visibility = childCursor.getInt(childCursor.getColumnIndex(DbSchema.Chart.Exchange.KEY_EXCHANGE_IS_VISIBLE));
-                        if (visibility != 0) {
-                            String exchange = childCursor.getString(childCursor.getColumnIndex(DbSchema.Chart.Exchange.KEY_EXCHANGE_NAME));
-                            String price = childCursor.getString(childCursor.getColumnIndex(DbSchema.Chart.Exchange.KEY_EXCHANGE_PRICE));
-                            String diff = Float.toString(childCursor.getFloat(childCursor.getColumnIndex(DbSchema.Chart.Exchange.KEY_EXCHANGE_DIFF_PERCENT)));
-                            String premium = Float.toString(childCursor.getFloat(childCursor.getColumnIndex(DbSchema.Chart.Exchange.KEY_EXCHANGE_PREMIUM)));
-                            String currencyUnit = childCursor.getString(childCursor.getColumnIndex(DbSchema.Chart.Exchange.KEY_EXCHANGE_CURRENCY_UNIT));
-
-                            ConcreteCoinChildData coinData = new ConcreteCoinChildData(childId);
-                            coinData.setExchange(exchange);
-                            coinData.setPrice(price);
-                            coinData.setDiffPercent(diff);
-                            coinData.setPremium(premium);
-                            coinData.setCurrencyUnit(currencyUnit);
-
-                            if (children.size() == 0) {
-                                copyCoinData(group, coinData);
-                            }
-
-                            children.add(coinData);
-                        }
-
-                        childCursor.moveToNext();
-                    }
-                    mData.add(new Pair<>(group, children));
-                }
-
-                cursor.moveToNext();
-            }
-        }
+        updateCursor();
     }
 
     @Override
@@ -175,6 +128,60 @@ public class ChartDataProvider extends ChartAbstractDataProvider {
             return undoChildRemoval();
         } else {
             return RecyclerViewExpandableItemManager.NO_EXPANDABLE_POSITION;
+        }
+    }
+
+    public void updateCursor() {
+        if (!mData.isEmpty()) {
+            mData.clear();
+        }
+
+        Cursor cursor = mDbManager.getGroupItem();
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast()) {
+                final long groupId = cursor.getInt(cursor.getColumnIndex(DbSchema.Chart.Coin.KEY_COIN_ID));
+                final String groupText = cursor.getString(cursor.getColumnIndex(DbSchema.Chart.Coin.KEY_COIN_NAME));
+
+                final ConcreteCoinGroupData group = new ConcreteCoinGroupData(groupId);
+                group.setCoinName(groupText);
+                group.setCoinSubName(cursor.getString(cursor.getColumnIndex(DbSchema.Chart.Coin.KEY_COIN_SUB_NAME)));
+                group.setIconResId(CoinInfo.COIN.getIconResId(mContext.getResources(), groupText));
+
+                Cursor childCursor = mDbManager.getChildItem((int)groupId);
+                if (childCursor.moveToFirst()) {
+                    final List<CoinChildData> children = new ArrayList<>();
+                    while (!childCursor.isAfterLast()) {
+                        final long childId = group.generateNewChildId();
+
+                        int visibility = childCursor.getInt(childCursor.getColumnIndex(DbSchema.Chart.Exchange.KEY_EXCHANGE_IS_VISIBLE));
+                        if (visibility != 0) {
+                            String exchange = childCursor.getString(childCursor.getColumnIndex(DbSchema.Chart.Exchange.KEY_EXCHANGE_NAME));
+                            String price = childCursor.getString(childCursor.getColumnIndex(DbSchema.Chart.Exchange.KEY_EXCHANGE_PRICE));
+                            String diff = childCursor.getString(childCursor.getColumnIndex(DbSchema.Chart.Exchange.KEY_EXCHANGE_DIFF_PERCENT));
+                            String premium = childCursor.getString(childCursor.getColumnIndex(DbSchema.Chart.Exchange.KEY_EXCHANGE_PREMIUM));
+                            String currencyUnit = childCursor.getString(childCursor.getColumnIndex(DbSchema.Chart.Exchange.KEY_EXCHANGE_CURRENCY_UNIT));
+
+                            ConcreteCoinChildData coinData = new ConcreteCoinChildData(childId);
+                            coinData.setExchange(exchange);
+                            coinData.setPrice(price);
+                            coinData.setDiffPercent(diff);
+                            coinData.setPremium(premium);
+                            coinData.setCurrencyUnit(currencyUnit);
+
+                            if (children.size() == 0) {
+                                copyCoinData(group, coinData);
+                            }
+
+                            children.add(coinData);
+                        }
+
+                        childCursor.moveToNext();
+                    }
+                    mData.add(new Pair<>(group, children));
+                }
+
+                cursor.moveToNext();
+            }
         }
     }
 

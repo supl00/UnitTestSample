@@ -6,6 +6,8 @@ import android.content.Context;
 import com.gazua.ddeokrok.coinman.data.CoinData;
 import com.gazua.ddeokrok.coinman.data.CoinInfo;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -19,7 +21,6 @@ public class CoinGenerator {
 
     public static int MAX_COIN_COUNT = 12;
 
-
     public static ArrayList<CoinData> getCoinSampleData(Context context, int index) {
         ArrayList<CoinData> list = new ArrayList<>();
 
@@ -28,11 +29,11 @@ public class CoinGenerator {
             CoinData data = new CoinData();
             data.setName(CoinInfo.COIN.values()[index].getName(context.getResources()));
             data.setSubName(CoinInfo.COIN.values()[index].getSubName(context.getResources()));
-            data.setDiffPercent(getRandomRatio(0, 70));
-            data.setPremium(getRandomRatio(0, 70));
+            data.setDiffPercent(getRandomDiffRatio(-50, 50));
+            data.setPremium(getRandomDiffRatio(-50, 50));
             data.setExchange(CoinInfo.EXCHANGE.values()[i].getName());
             data.setCurrencyUnit(CoinInfo.EXCHANGE.values()[i].isUSDUnitType() ? "USD" : "KRW");
-            data.setPrice(getRandomNumber(10000, 30000000));
+            data.setPrice(getRandomPrice(10000, 30000000));
             list.add(data);
         }
 
@@ -40,11 +41,23 @@ public class CoinGenerator {
     }
 
     private static int getRandomNumber(int min,int max) {
+
         return (new Random()).nextInt((max - min) + 1) + min;
     }
 
-    private static float getRandomRatio(float min,float max) {
+    private static String getRandomPrice(int min, int max) {
+        NumberFormat formatter = new DecimalFormat("#,###");
+        double myNumber = getRandomNumber(min, max);
+        return formatter.format(myNumber);
+    }
+
+    private static float getRandomRatio(float min, float max) {
         float ratio = (max - min) * (new Random()).nextFloat() + min;
         return Math.round(ratio * 100f) / 100f;
+    }
+
+    private static String getRandomDiffRatio(float min, float max) {
+        float ratio = getRandomRatio(min, max);
+        return Float.toString(ratio) + '%';
     }
 }
