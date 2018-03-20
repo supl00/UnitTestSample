@@ -39,5 +39,9 @@ dependencies {
     compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
     compile 'com.github.bumptech.glide:glide:4.6.1'
     compile 'com.thefinestartist:finestwebview:1.2.7'
+    // Include all the Twitter APIs
+    compile 'com.twitter.sdk.android:twitter:3.1.1'
+    // (Optional) Monetize using mopub
+    compile 'com.twitter.sdk.android:twitter-mopub:3.1.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.6.1'
 }

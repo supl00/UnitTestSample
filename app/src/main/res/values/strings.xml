@@ -34,4 +34,7 @@
     <string name="coin_sub_name_zec">ZEC</string>
     <string name="coin_sub_name_btg">BTG</string>
     <string name="coin_sub_name_eos">EOS</string>
+
+    <string name="consumer_key">joTzHDzUskGGfDGYpvYbfU3eX</string>
+    <string name="consumer_secret">56l6eXLdCj1QwNRfxoafjBM6wZ6Hyd9ldvan6FjSVsEixDYdG3</string>
 </resources>
