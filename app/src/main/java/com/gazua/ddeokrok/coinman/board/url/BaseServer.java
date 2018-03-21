@@ -96,8 +96,8 @@ public abstract class BaseServer {
     @NonNull
     public static Observable<BoardData> asBoardList(BaseServer server, String content) {
         return Maybe.just(content)
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(Schedulers.io())
                 .filter(Objects::nonNull)
                 .map(Jsoup::parse)
                 .map(document -> document.select(server.listTag()))

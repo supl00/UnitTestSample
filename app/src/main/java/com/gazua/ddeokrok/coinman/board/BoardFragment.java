@@ -1,6 +1,5 @@
 package com.gazua.ddeokrok.coinman.board;
 
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -13,9 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
 import com.gazua.ddeokrok.coinman.R;
 import com.gazua.ddeokrok.coinman.board.data.BoardData;
 import com.gazua.ddeokrok.coinman.board.url.UrlBuilder;
@@ -25,7 +22,6 @@ import com.gazua.ddeokrok.coinman.common.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.Observable;
 import io.reactivex.Single;
 
 /**
@@ -54,7 +50,6 @@ public class BoardFragment extends Fragment implements FabActionListener {
         this.boardRecyclerView = view.findViewById(R.id.recycler_view);
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            boardDataList.clear();
             loadPage(mPageCount = 0);
         });
 
@@ -74,7 +69,7 @@ public class BoardFragment extends Fragment implements FabActionListener {
             private boolean isMaxScrollReached(RecyclerView recyclerView) {
                 int maxScroll = recyclerView.computeVerticalScrollRange();
                 int currentScroll = recyclerView.computeVerticalScrollOffset() + recyclerView.computeVerticalScrollExtent();
-                return currentScroll >= maxScroll * 0.85f;
+                return currentScroll >= maxScroll * 0.7f;
             }
         });
         swipeRefreshLayout.post(() -> loadPage(mPageCount));
@@ -96,30 +91,18 @@ public class BoardFragment extends Fragment implements FabActionListener {
         UrlBuilder.target(UrlBuilder.TARGET_SERVER_CLIEN, UrlBuilder.TARGET_SERVER_BULLPEN)
                 .page(page)
                 .category(UrlBuilder.CATEGORY_COIN)
-                .query(boardDataList::addAll,
+                .query(boardDatas -> {
+                            Single.just(page).filter(p -> p == 0).subscribe(integer -> {
+                                Logger.d(TAG, "loadPage, refresh");
+                                boardDataList.clear();
+                            });
+                            boardDataList.addAll(boardDatas);
+                        },
                         throwable -> Logger.d(TAG, "loadPage, e : " + throwable.getMessage()),
                         () -> {
                             boardRecyclerView.getAdapter().notifyDataSetChanged();
                             swipeRefreshLayout.setRefreshing(false);
                         });
-//        UrlBuilder.target(UrlBuilder.TARGET_SERVER_CLIEN)
-//                .page(page)
-//                .category(UrlBuilder.CATEGORY_COIN)
-//                .query(boardDataList::addAll,
-//                        throwable -> Logger.d(TAG, "loadPage, e : " + throwable.getMessage()),
-//                        () -> {
-//                            boardRecyclerView.getAdapter().notifyDataSetChanged();
-//                            swipeRefreshLayout.setRefreshing(false);
-//                        });
-//        UrlBuilder.target(UrlBuilder.TARGET_SERVER_BULLPEN)
-//                .page(page)
-//                .category(UrlBuilder.CATEGORY_COIN)
-//                .query(boardDataList::addAll,
-//                        throwable -> Logger.d(TAG, "loadPage, e : " + throwable.getMessage()),
-//                        () -> {
-//                            boardRecyclerView.getAdapter().notifyDataSetChanged();
-//                            swipeRefreshLayout.setRefreshing(false);
-//                        });
     }
 
     @Override

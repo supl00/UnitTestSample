@@ -18,6 +18,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.internal.functions.Functions;
+import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -51,14 +52,6 @@ public class UrlBuilder {
                 .blockingGet());
     }
 
-    public String baseUrl(@NonNull BaseServer server) {
-        return server.baseUrl();
-    }
-
-    public String totalUrl(@NonNull BaseServer server) {
-        return server.totalUrl();
-    }
-
     public UrlBuilder category(int category) {
         this.baseServers.forEach(baseServer -> baseServer.category(category));
         return this;
@@ -83,95 +76,110 @@ public class UrlBuilder {
 
     @VisibleForTesting
     public void queryTest(@NonNull Consumer<? super List<BoardData>> onSuccess, @NonNull Consumer<? super Throwable> onError, Action onTerminate) {
-        this.baseServers.forEach(baseServer -> {
-            Logger.d(TAG, " query - base : " + baseUrl(baseServer) + ", total : " + totalUrl(baseServer));
-            PageService pageService = ApiUtils.getRpJsoupService();
-            pageService.selectContentGetSubList(totalUrl(baseServer))
-                    .enqueue(new Callback<Page>() {
-                                 @Override
-                                 public void onResponse(@NonNull Call<Page> call, @NonNull Response<Page> response) {
-                                     Logger.d(TAG, "res : " + response);
-                                     BaseServer.asBoardItems(baseServer, response.body().getContent())
-                                             .observeOn(AndroidSchedulers.mainThread())
-                                             .doOnError(throwable -> {
-                                                 Logger.d(TAG, "onResponse, doOnError");
-                                                 onError.accept(throwable);
-                                             })
-                                             .doOnComplete(() -> {
-                                                 Logger.d(TAG, "onResponse, doOnComplete");
+        Observable.fromIterable(this.baseServers)
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnError(throwable -> {
+                    Logger.d(TAG, "onResponse, doOnError");
+                    onError.accept(throwable);
+                })
+                .doOnComplete(() -> {
+                    Logger.d(TAG, "onResponse, doOnComplete");
 //                                                 onSuccess.accept(null);
-                                             })
-                                             .doOnTerminate(() -> {
-                                                 Logger.d(TAG, "onResponse, doOnTerminate");
-                                                 onTerminate.run();
-                                             })
-                                             .forEach(element -> {
-                                                 Logger.d(TAG, "asdasd : " + element);
-                                                 Logger.d(TAG, "title : " + element.select(".t_left > a").attr("title"));
-                                                 Logger.d(TAG, "date : " + element.select(".date").html());
+                })
+                .doOnTerminate(() -> {
+                    Logger.d(TAG, "onResponse, doOnTerminate");
+                    onTerminate.run();
+                })
+                .observeOn(Schedulers.io())
+                .forEach(baseServer -> {
+                    Logger.d(TAG, " query - base : " + baseUrl(baseServer) + ", total : " + totalUrl(baseServer));
+                    PageService pageService = ApiUtils.getRpJsoupService();
+                    pageService.selectContentGetSubList(totalUrl(baseServer))
+                            .enqueue(new Callback<Page>() {
+                                         @Override
+                                         public void onResponse(@NonNull Call<Page> call, @NonNull Response<Page> response) {
+                                             Logger.d(TAG, "res : " + response);
+                                             BaseServer.asBoardItems(baseServer, response.body().getContent())
+                                                     .forEach(element -> {
+                                                         Logger.d(TAG, "asdasd : " + element);
+                                                         Logger.d(TAG, "title : " + element.select(".t_left > a").attr("title"));
+                                                         Logger.d(TAG, "date : " + element.select(".date").html());
 //                                             Logger.d(TAG, "hit : " + element.select(".viewV").html());
-                                                 Logger.d(TAG, "href : " + element.select(".t_left > a").attr("href"));
-                                                 Logger.d(TAG, "image : " + element.select("img").attr("src"));
-                                                 Logger.d(TAG, "name : " + element.select(".nick").text());
-                                                 Logger.d(TAG, "reply count : " + element.select(".replycnt").text());
-                                             });
-                                 }
+                                                         Logger.d(TAG, "href : " + element.select(".t_left > a").attr("href"));
+                                                         Logger.d(TAG, "image : " + element.select("img").attr("src"));
+                                                         Logger.d(TAG, "name : " + element.select(".nick").text());
+                                                         Logger.d(TAG, "reply count : " + element.select(".replycnt").text());
+                                                     });
+                                         }
 
-                                 @Override
-                                 public void onFailure(Call<Page> call, Throwable t) {
-                                     Logger.d(TAG, "onFailure : " + t);
-                                     try {
-                                         onError.accept(t);
-                                         onTerminate.run();
-                                     } catch (Throwable e) {
+                                         @Override
+                                         public void onFailure(Call<Page> call, Throwable t) {
+                                             Logger.d(TAG, "onFailure : " + t);
+                                             try {
+                                                 onError.accept(t);
+                                                 onTerminate.run();
+                                             } catch (Throwable e) {
+                                             }
+                                         }
                                      }
-                                 }
-                             }
-                    );
-        });
+                            );
+                });
     }
 
     public void query(@NonNull Consumer<? super List<BoardData>> onSuccess, @NonNull Consumer<? super Throwable> onError, Action onTerminate) {
         final List<BoardData> boardDataList = new ArrayList<>();
-        this.baseServers.forEach(baseServer -> {
-            Logger.d(TAG, " query - base : " + baseUrl(baseServer) + ", total : " + totalUrl(baseServer));
-            PageService pageService = ApiUtils.getRpJsoupService();
-            pageService.selectContentGetSubList(totalUrl(baseServer))
-                    .enqueue(new Callback<Page>() {
-                                 @Override
-                                 public void onResponse(@NonNull Call<Page> call, @NonNull Response<Page> response) {
-                                     Logger.d(TAG, "res : " + response);
-                                     BaseServer.asBoardList(baseServer, response.body().getContent())
-                                             .observeOn(AndroidSchedulers.mainThread())
-                                             .doOnError(throwable -> {
-                                                 Logger.d(TAG, "onResponse, doOnError");
-                                                 onError.accept(throwable);
-                                             })
-                                             .doOnComplete(() -> {
-                                                 Logger.d(TAG, "onResponse, doOnComplete");
-                                                 onSuccess.accept(boardDataList);
-                                             })
-                                             .doOnTerminate(() -> {
-                                                 Logger.d(TAG, "onResponse, doOnTerminate");
-                                                 onTerminate.run();
-                                             })
-                                             .forEach(data -> {
-                                                 Logger.d(TAG, "onResponse, data : " + data.toString());
-                                                 boardDataList.add(data);
-                                             });
-                                 }
+        List<Observable<BoardData>> observables = new ArrayList<>();
+        this.baseServers.forEach(baseServer ->
+                observables.add(Observable.just(baseServer)
+                        .observeOn(Schedulers.io())
+                        .flatMapIterable(UrlBuilder::execute))
+        );
+        Observable.zip(observables, objects ->
+                Observable.fromArray(objects)
+                        .map(t -> (BoardData) t)
+                        .forEach(boardDataList::add))
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnError(throwable -> {
+                    Logger.d(TAG, "query, doOnError");
+                    onError.accept(throwable);
+                    onTerminate.run();
+                })
+                .doOnComplete(() -> {
+                    Logger.d(TAG, "query, doOnComplete");
+                    onSuccess.accept(boardDataList);
+                })
+                .doOnTerminate(() -> {
+                    Logger.d(TAG, "query, doOnTerminate");
+                    onTerminate.run();
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .subscribe();
+    }
 
-                                 @Override
-                                 public void onFailure(Call<Page> call, Throwable t) {
-                                     Logger.d(TAG, "onFailure : " + t);
-                                     try {
-                                         onError.accept(t);
-                                         onTerminate.run();
-                                     } catch (Throwable e) {
-                                     }
-                                 }
-                             }
-                    );
-        });
+    public static String baseUrl(@NonNull BaseServer server) {
+        return server.baseUrl();
+    }
+
+    public static String totalUrl(@NonNull BaseServer server) {
+        return server.totalUrl();
+    }
+
+    public static List<BoardData> execute(BaseServer baseServer) {
+        Logger.d(TAG, " query - base : " + baseUrl(baseServer) + ", total : " + totalUrl(baseServer));
+        final List<BoardData> list = new ArrayList<>();
+        PageService pageService = ApiUtils.getRpJsoupService();
+        try {
+            String contents = pageService.selectContentGetSubList(totalUrl(baseServer)).execute().body().getContent();
+            BaseServer.asBoardList(baseServer, contents)
+                    .forEach(data -> {
+                        Logger.d(TAG, "onResponse, data : " + data.toString());
+                        list.add(data);
+                    });
+        } catch (Exception e) {
+            Logger.d(TAG, "onFailure : " + e);
+            throw new RuntimeException(e.getMessage());
+        }
+        return list;
     }
 }
