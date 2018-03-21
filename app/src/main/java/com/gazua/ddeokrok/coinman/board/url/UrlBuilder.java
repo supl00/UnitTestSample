@@ -99,17 +99,18 @@ public class UrlBuilder {
                                              })
                                              .doOnComplete(() -> {
                                                  Logger.d(TAG, "onResponse, doOnComplete");
-                                                 onSuccess.accept(null);
+//                                                 onSuccess.accept(null);
                                              })
                                              .doOnTerminate(() -> {
                                                  Logger.d(TAG, "onResponse, doOnTerminate");
                                                  onTerminate.run();
                                              })
                                              .forEach(element -> {
-                                                 Logger.d(TAG, "title : " + element.select(".title ").text());
+                                                 Logger.d(TAG, "asdasd : " + element);
+                                                 Logger.d(TAG, "title : " + element.select(".t_left > a").attr("title"));
                                                  Logger.d(TAG, "date : " + element.select(".date").html());
 //                                             Logger.d(TAG, "hit : " + element.select(".viewV").html());
-                                                 Logger.d(TAG, "href : " + element.select(".title > a").attr("href"));
+                                                 Logger.d(TAG, "href : " + element.select(".t_left > a").attr("href"));
                                                  Logger.d(TAG, "image : " + element.select("img").attr("src"));
                                                  Logger.d(TAG, "name : " + element.select(".nick").text());
                                                  Logger.d(TAG, "reply count : " + element.select(".replycnt").text());

@@ -74,7 +74,7 @@ public class BoardFragment extends Fragment implements FabActionListener {
             private boolean isMaxScrollReached(RecyclerView recyclerView) {
                 int maxScroll = recyclerView.computeVerticalScrollRange();
                 int currentScroll = recyclerView.computeVerticalScrollOffset() + recyclerView.computeVerticalScrollExtent();
-                return currentScroll >= maxScroll * 0.7f;
+                return currentScroll >= maxScroll * 0.85f;
             }
         });
         swipeRefreshLayout.post(() -> loadPage(mPageCount));
@@ -84,6 +84,15 @@ public class BoardFragment extends Fragment implements FabActionListener {
     public void loadPage(int page) {
         Logger.d(TAG, " loadPage - page : " + page);
         swipeRefreshLayout.setRefreshing(true);
+//        UrlBuilder.target(UrlBuilder.TARGET_SERVER_CLIEN)
+//                .page(page)
+//                .category(UrlBuilder.CATEGORY_COIN)
+//                .queryTest(null,
+//                        throwable -> Logger.d(TAG, "loadPage, e : " + throwable.getMessage()),
+//                        () -> {
+////                            boardRecyclerView.getAdapter().notifyDataSetChanged();
+////                            swipeRefreshLayout.setRefreshing(false);
+//                        });
         UrlBuilder.target(UrlBuilder.TARGET_SERVER_CLIEN, UrlBuilder.TARGET_SERVER_BULLPEN)
                 .page(page)
                 .category(UrlBuilder.CATEGORY_COIN)

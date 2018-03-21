@@ -15,6 +15,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import okhttp3.internal.Version;
 import retrofit2.Converter;
 import retrofit2.Retrofit;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
@@ -23,7 +24,7 @@ public class RetrofitJsoupClient {
     private static RetrofitJsoupClient Instance = null;
     private OkHttpClient okHttpClient = new OkHttpClient.Builder().addInterceptor(paramChain -> {
         Request localRequest = paramChain.request();
-        return paramChain.proceed(localRequest.newBuilder().header("User-Agent", "Mozilla/5.0 (Linux; U; Android 4.0.3; ko-kr; LG-L160L Build/IML74K) AppleWebkit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30").method(localRequest.method(), localRequest.body()).build());
+        return paramChain.proceed(localRequest.newBuilder().header("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/6.4 Chrome/56.0.2924.87 Safari/537.36").method(localRequest.method(), localRequest.body()).build());
     }).readTimeout(20L, TimeUnit.SECONDS).connectTimeout(15L, TimeUnit.SECONDS).build();
     private Retrofit retrofit = new Retrofit.Builder().baseUrl("https://coinloid.com")
             .addConverterFactory(ScalarsConverterFactory.create())

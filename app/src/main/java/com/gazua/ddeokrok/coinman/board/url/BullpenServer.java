@@ -26,7 +26,7 @@ public class BullpenServer extends BaseServer {
 
     @Override
     public String listTag() {
-        return "div.contents > ul.lists > li.items";
+        return "div.contents > div.left_cont > div.tbl_box > table.tbl_type01 > tbody > tr";
     }
 
     @Override
@@ -41,38 +41,37 @@ public class BullpenServer extends BaseServer {
     }
 
     @Override
-    public String parseTitle(Element elements) {
-        return elements.select(".title ").text();
+    public String parseTitle(Element element) {
+        return element.select(".t_left > a").attr("title");
     }
 
     @Override
-    public String parseDate(Element elements) {
-        return elements.select(".date").html();
+    public String parseDate(Element element) {
+        return element.select(".date").text();
     }
 
     @Override
-    public String parseHitsCount(Element elements) {
-//        return elements.select(".viewV").html();
-        return "0";
+    public String parseHitsCount(Element element) {
+        return element.select(".viewV").text();
     }
 
     @Override
-    public String parseReplyCount(Element elements) {
-        return elements.select(".replycnt").text();
+    public String parseReplyCount(Element element) {
+        return element.select(".replycnt").text();
     }
 
     @Override
-    public String parseLinkUrl(Element elements) {
-        return elements.select(".title > a").attr("href");
+    public String parseLinkUrl(Element element) {
+        return element.select(".t_left > a").attr("href");
     }
 
     @Override
-    public String parseUserNickname(Element elements) {
-        return elements.select(".nick").text();
+    public String parseUserNickname(Element element) {
+        return element.select(".nick").text();
     }
 
     @Override
-    public String parseUserImage(Element elements) {
-        return null;//elements.select("img").attr("src");
+    public String parseUserImage(Element element) {
+        return element.select("img").attr("src");
     }
 }

@@ -86,7 +86,10 @@ public abstract class BaseServer {
                 .observeOn(Schedulers.io())
                 .filter(Objects::nonNull)
                 .map(Jsoup::parse)
-                .map(document -> document.select(server.listTag()))
+                .map(document -> {
+//                    Logger.d(TAG, "asBoardItems, document : " + document);
+                    return document.select(server.listTag());
+                })
                 .flatMapObservable(Observable::fromIterable);
     }
 

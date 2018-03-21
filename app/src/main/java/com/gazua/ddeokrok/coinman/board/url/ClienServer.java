@@ -12,7 +12,7 @@ import io.reactivex.Observable;
 
 public class ClienServer extends BaseServer {
     private static final String TAG = "ClienServer";
-    private static final String URI_CLIEN = "https://m.clien.net/service/board/cm_vcoin?&od=T31";
+    private static final String URI_CLIEN = "https://clien.net/service/board/cm_vcoin?&od=T31";
 
     @Override
     public String baseUrl() {
@@ -26,7 +26,7 @@ public class ClienServer extends BaseServer {
 
     @Override
     public String listTag() {
-        return "div.list_item";
+        return "div.list_item.symph_row";
     }
 
     @Override
@@ -46,37 +46,37 @@ public class ClienServer extends BaseServer {
                 .filter(element -> element.hasAttr("data-role"))
                 .singleElement()
                 .doOnError(throwable -> Logger.e(TAG, "message : " + throwable.getMessage()))
-                .map(Element::html)
+                .map(Element::text)
                 .blockingGet("");
     }
 
     @Override
     public String parseDate(Element elements) {
-        return elements.select(".list_time > span").html();
+        return elements.select(".timestamp").text();
     }
 
     @Override
     public String parseHitsCount(Element elements) {
-        return elements.select(".list_hit > span").html();
+        return elements.select(".list_hit").text();
     }
 
     @Override
     public String parseReplyCount(Element elements) {
-        return elements.select(".list_reply > span").html();
+        return elements.select(".list_reply.reply_symph").text();
     }
 
     @Override
     public String parseLinkUrl(Element elements) {
-        return "https://m.clien.net/" + elements.select("a").attr("href");
+        return "https://m.clien.net/" + elements.select("a.list_subject").attr("href");
     }
 
     @Override
     public String parseUserNickname(Element elements) {
-        return elements.select(".nickname").html();
+        return elements.select(".nickname").text();
     }
 
     @Override
     public String parseUserImage(Element elements) {
-        return elements.select(".nickimg > img").attr("src");
+        return elements.select(".nickname > img").attr("src");
     }
 }
