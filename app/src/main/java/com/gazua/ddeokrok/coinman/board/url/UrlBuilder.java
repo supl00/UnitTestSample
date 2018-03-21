@@ -11,6 +11,8 @@ import com.gazua.ddeokrok.coinman.network.page.Page;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import io.reactivex.Observable;
@@ -137,7 +139,7 @@ public class UrlBuilder {
         Observable.zip(observables, objects ->
                 Observable.fromArray(objects)
                         .map(t -> (BoardData) t)
-                        .forEach(boardDataList::add))
+                        .forEach(data -> boardDataList.add(Math.max(0, Collections.binarySearch(boardDataList, data, Comparator.comparing(BoardData::getDate))), data)))
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnError(throwable -> {
                     Logger.d(TAG, "query, doOnError");
