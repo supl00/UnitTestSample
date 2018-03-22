@@ -21,6 +21,7 @@ import com.gazua.ddeokrok.coinman.common.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import io.reactivex.Single;
 
@@ -109,7 +110,9 @@ public class BoardFragment extends Fragment implements FabActionListener {
     public void onClickFab(FloatingActionButton fab) {
         Logger.d(TAG, "onClickFab, fab : " + fab);
         final int startPosition = 30;
-        Single.fromCallable(() -> ((LinearLayoutManager) boardRecyclerView.getLayoutManager()).findFirstVisibleItemPosition())
+        Single.fromCallable(() -> ((LinearLayoutManager) boardRecyclerView.getLayoutManager()))
+                .filter(Objects::nonNull)
+                .map(LinearLayoutManager::findFirstVisibleItemPosition)
                 .map(pos -> pos > startPosition ? startPosition : pos)
                 .subscribe(startPos -> {
                     boardRecyclerView.scrollToPosition(startPos);
