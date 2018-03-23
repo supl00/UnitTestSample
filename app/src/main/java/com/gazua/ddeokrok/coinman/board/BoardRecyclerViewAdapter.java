@@ -45,9 +45,6 @@ public class BoardRecyclerViewAdapter extends RecyclerView.Adapter<BoardRecycler
         holder.update(data);
         holder.setOnItemClickListener(v -> {
             new FinestWebView.Builder(holder.itemView.getContext()).show(data.getLinkUrl());
-//            Intent intent = new Intent(holder.itemView.getContext(), WebViewActivity.class);
-//            intent.putExtra("url", data.getLinkUrl());
-//            holder.itemView.getContext().startActivity(intent);
         });
     }
 
