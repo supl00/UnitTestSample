@@ -1,6 +1,5 @@
 package com.gazua.ddeokrok.coinman.board;
 
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -13,11 +12,9 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.gazua.ddeokrok.coinman.R;
 import com.gazua.ddeokrok.coinman.board.data.BoardData;
-import com.gazua.ddeokrok.coinman.common.WebViewActivity;
 import com.thefinestartist.finestwebview.FinestWebView;
 
 import java.util.List;
-import java.util.Objects;
 
 import io.reactivex.Maybe;
 

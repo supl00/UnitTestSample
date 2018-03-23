@@ -6,7 +6,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,6 +17,7 @@ import com.gazua.ddeokrok.coinman.board.data.BoardData;
 import com.gazua.ddeokrok.coinman.board.url.UrlBuilder;
 import com.gazua.ddeokrok.coinman.common.FabActionListener;
 import com.gazua.ddeokrok.coinman.common.Logger;
+import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +57,10 @@ public class BoardFragment extends Fragment implements FabActionListener {
         this.boardRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         this.boardRecyclerView.setItemAnimator(new DefaultItemAnimator());
         this.boardRecyclerView.setAdapter(new BoardRecyclerViewAdapter(this.boardDataList));
-        this.boardRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
+        this.boardRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getContext())
+                .colorResId(R.color.board_divider)
+                .sizeResId(R.dimen.board_divider_height)
+                .build());
         this.boardRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
