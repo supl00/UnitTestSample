@@ -7,17 +7,22 @@ import android.text.TextUtils;
  */
 
 public class BoardData {
+    int boardNameResId;
     String title;
     String date;
-    String count;
+    String viewCount;
+    String commentCount;
     String linkUrl;
     String userName;
     String userImage;
+    String body;
 
-    public BoardData(String title, String date, String count, String linkUrl, String userName, String userImage) {
+    public BoardData(int boardNameResId, String title, String date, String viewCount, String commentCount, String linkUrl, String userName, String userImage) {
+        this.boardNameResId = boardNameResId;
         this.title = title;
         this.date = date;
-        this.count = TextUtils.isEmpty(count) ? "0" : count;
+        this.viewCount = TextUtils.isEmpty(viewCount) ? "0" : viewCount;
+        this.commentCount = TextUtils.isEmpty(commentCount) ? "0" : commentCount;
         this.linkUrl = linkUrl;
         this.userName = userName;
         this.userImage = userImage;
@@ -31,8 +36,12 @@ public class BoardData {
         return date;
     }
 
-    public String getCount() {
-        return count;
+    public String getViewCount() {
+        return viewCount;
+    }
+
+    public String getCommentCount() {
+        return commentCount;
     }
 
     public String getLinkUrl() {
@@ -47,13 +56,21 @@ public class BoardData {
         return userImage;
     }
 
-    public static BoardData asData(String title, String date, String count, String linkUrl, String userName, String userImage) {
-        return new BoardData(title, date, count, linkUrl, userName, userImage);
+    public int getBoardNameResId() {
+        return boardNameResId;
+    }
+
+    public static BoardData asData(int boardNameResId, String title, String date, String viewCount, String commentCount, String linkUrl, String userName, String userImage) {
+        return new BoardData(boardNameResId, title, date, viewCount, commentCount, linkUrl, userName, userImage);
     }
 
     @Override
     public String toString() {
-        return "[ title : " + this.title + ", date : " + this.date + ", count : " + this.count + ", linkUrl : "
+        return "[ title : " + this.title + ", date : " + this.date + ", viewCount : " + this.viewCount + ", commentCount : " + this.commentCount + ", linkUrl : "
                                     + this.linkUrl + ", userName : " + this.userName + ", userimage : " + this.userImage + " ]";
+    }
+
+    public String getBody() {
+        return body;
     }
 }

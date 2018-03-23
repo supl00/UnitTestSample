@@ -32,6 +32,13 @@
     <color name="bg_swipe_group_item_dismiss">#ff295db3</color>
 
     <color name="board_divider">#eaeaea</color>
+    <color name="board_bottom_icon_tint">#cfd8dc</color>
+    <color name="board_bottom_text_color">#757575</color>
+    <color name="board_bottom_background_stroke">#e0e0e0</color>
+    <color name="board_name_color">#bc1c1c</color>
+    <color name="board_username_color">#d429da</color>
+    <color name="board_content_title_color">#37474f</color>
+    <color name="board_content_body_color">#b0bec5</color>
 
     <color name="snackbar_action_color_done">#ffccccff</color>
 

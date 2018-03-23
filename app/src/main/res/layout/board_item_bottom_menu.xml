@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/board_bottom_background_stroke" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:paddingStart="@dimen/board_content_padding">
+
+        <LinearLayout
+            android:id="@+id/view_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/board_bottom_menu_view_margin_horizontal"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="@dimen/board_bottom_icon_size"
+                android:layout_height="@dimen/board_bottom_icon_size"
+                android:layout_marginEnd="@dimen/board_bottom_menu_icon_margin_end"
+                android:src="@drawable/view"
+                android:tint="@color/board_bottom_icon_tint" />
+
+            <TextView
+                android:id="@+id/text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="46"
+                android:textColor="@color/board_bottom_text_color"
+                android:textSize="@dimen/board_bottom_menu_text_size" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/comment_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/view_parent"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="@dimen/board_bottom_icon_size"
+                android:layout_height="@dimen/board_bottom_icon_size"
+                android:layout_marginEnd="@dimen/board_bottom_menu_icon_margin_end"
+                android:src="@drawable/comment"
+                android:tint="@color/board_bottom_icon_tint" />
+
+            <TextView
+                android:id="@+id/text_comment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="10"
+                android:textColor="@color/board_bottom_text_color"
+                android:textSize="@dimen/board_bottom_menu_text_size" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/right_side_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/board_text_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/board_bottom_menu_view_margin_horizontal"
+                android:text="2018-03-24"
+                android:textColor="@color/board_bottom_text_color"
+                android:textSize="@dimen/board_bottom_menu_text_size" />
+
+            <View
+                android:layout_width="1px"
+                android:layout_height="match_parent"
+                android:background="@color/board_bottom_background_stroke" />
+
+            <FrameLayout
+                android:id="@+id/favorite"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingEnd="@dimen/board_bottom_menu_view_margin_horizontal"
+                android:paddingStart="@dimen/board_bottom_menu_view_margin_horizontal">
+
+                <View
+                    android:layout_width="@dimen/board_bottom_icon_size"
+                    android:layout_height="@dimen/board_bottom_icon_size"
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/favorite" />
+            </FrameLayout>
+        </LinearLayout>
+
+    </RelativeLayout>
+</LinearLayout>

@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 import android.text.TextUtils;
 
+import com.gazua.ddeokrok.coinman.R;
 import com.gazua.ddeokrok.coinman.board.data.BoardData;
 import com.gazua.ddeokrok.coinman.common.Logger;
 
@@ -102,12 +103,24 @@ public abstract class BaseServer {
                 .map(Jsoup::parse)
                 .map(document -> document.select(server.listTag()))
                 .flatMapObservable(Observable::fromIterable)
-                .map(elements -> BoardData.asData(server.parseTitle(elements),
+                .map(elements -> BoardData.asData(getBoardNameResId(server),
+                        server.parseTitle(elements),
                         server.parseDate(elements),
+                        server.parseHitsCount(elements),
                         server.parseReplyCount(elements),
                         server.parseLinkUrl(elements),
                         server.parseUserNickname(elements),
                         server.parseUserImage(elements)))
                 .filter(data -> !TextUtils.isEmpty(data.getTitle()));
+    }
+
+    private static int getBoardNameResId(BaseServer server) {
+        int resId = R.string.server_clien;
+        if (server instanceof ClienServer) {
+            resId = R.string.server_clien;
+        } else if (server instanceof BullpenServer) {
+            resId = R.string.server_bullpen;
+        }
+        return resId;
     }
 }

@@ -112,7 +112,7 @@ public class BoardFragment extends Fragment implements FabActionListener {
     @Override
     public void onClickFab(FloatingActionButton fab) {
         Logger.d(TAG, "onClickFab, fab : " + fab);
-        final int startPosition = 30;
+        final int startPosition = 8;
         Single.fromCallable(() -> ((LinearLayoutManager) boardRecyclerView.getLayoutManager()))
                 .filter(Objects::nonNull)
                 .map(LinearLayoutManager::findFirstVisibleItemPosition)

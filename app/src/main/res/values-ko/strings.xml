@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">코인맨</string>
+    <string name="app_name">유닛테스트샘플</string>
     <string name="action_settings">설정</string>
     <string name="section_format">Hello World from section: %1$d</string>
 
@@ -20,4 +20,7 @@
     <string name="coin_name_zec">제트캐시</string>
     <string name="coin_name_btg">비트코인골드</string>
     <string name="coin_name_eos">이오스</string>
+
+    <string name="server_clien">클리앙</string>
+    <string name="server_bullpen">불펜</string>
 </resources>
