@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import io.reactivex.Maybe;
 
 public class MainActivity extends AppCompatActivity {
@@ -53,6 +54,30 @@ public class MainActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
+
+    @Override
+    public void onBackPressed() {
+        new SweetAlertDialog(this, SweetAlertDialog.CUSTOM_IMAGE_TYPE)
+                .setTitleText("종료하시겠습니까?")
+                .setCancelText("아니오")
+                .setConfirmText("네")
+                .showCancelButton(true)
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                        finish();
+                    }
+                })
+                .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        sDialog.cancel();
+                    }
+                })
+                .show();
+
+        return;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

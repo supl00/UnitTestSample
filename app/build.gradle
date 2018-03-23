@@ -45,4 +45,5 @@ dependencies {
     compile 'com.twitter.sdk.android:twitter-mopub:3.1.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.6.1'
     compile 'com.yqritc:recyclerview-flexibledivider:1.4.0'
+    compile 'cn.pedant.sweetalert:library:1.3'
 }
