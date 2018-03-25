@@ -6,10 +6,11 @@ import com.gazua.ddeokrok.coinman.chart.util.TimeUtils;
 
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 
-public abstract class Market {
+public abstract class Market implements Comparable<Market>, Serializable {
 
 	public final String key;
 	public final String name;

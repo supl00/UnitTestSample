@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">UnitTestSample</string>
+    <string name="main_app_name">UnitTestSample</string>
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
 
@@ -64,6 +64,8 @@
     <string name="ticker_raw_response_headers">----- Response headers -----</string>
     <string name="ticker_raw_response">----- Raw response -----</string>
     <string name="ticker_raw_stacktrace">----- Stacktrace -----</string>
+
+    <string name="coin_picker_activity_title">Select Coin</string>
 
     <string name="consumer_key">joTzHDzUskGGfDGYpvYbfU3eX</string>
     <string name="consumer_secret">56l6eXLdCj1QwNRfxoafjBM6wZ6Hyd9ldvan6FjSVsEixDYdG3</string>

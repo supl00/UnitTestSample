@@ -38,4 +38,17 @@
     <dimen name="board_bottom_menu_view_margin_horizontal">15dp</dimen>
     <dimen name="board_bottom_menu_icon_margin_end">8dp</dimen>
     <dimen name="board_bottom_menu_user_image_height">20dp</dimen>
+
+    <dimen name="yal_ms_knob_height">25dp</dimen>
+    <dimen name="yal_ms_knob_width_half">1.5dp</dimen>
+
+    <dimen name="yal_ms_divider_width_half">3dp</dimen>
+    <dimen name="yal_ms_divider_width_half_negative">-3dp</dimen>
+
+    <dimen name="decoration_size">1.5dp</dimen>
+
+    <dimen name="header_height">150dp</dimen>
+
+    <dimen name="viewpager_margin">-64dp</dimen>
+    <dimen name="viewpager_margin_fix">32dp</dimen>
 </resources>

@@ -1,5 +1,6 @@
 package com.gazua.ddeokrok.coinman.chart;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.gazua.ddeokrok.coinman.R;
+import com.gazua.ddeokrok.coinman.chart.coinpicker.CoinPickerActivity;
 
 
 public class ChartFragment extends Fragment {
@@ -25,6 +27,9 @@ public class ChartFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        Intent i = new Intent(getContext(), CoinPickerActivity.class);
+        startActivity(i);
 
         mChartManager = new ChartManager(getView(), savedInstanceState);
     }

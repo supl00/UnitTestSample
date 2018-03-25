@@ -1,5 +1,7 @@
 package com.gazua.ddeokrok.coinman.chart.model.market;
 
+import android.support.annotation.NonNull;
+
 import com.gazua.ddeokrok.coinman.chart.model.CheckerInfo;
 import com.gazua.ddeokrok.coinman.chart.model.CurrencyPairInfo;
 import com.gazua.ddeokrok.coinman.chart.model.Market;
@@ -75,5 +77,10 @@ public class Coinbase extends Market {
 					pairJsonObject.getString("quote_currency"),
 					pairJsonObject.getString("id")));
 		}
+	}
+
+	@Override
+	public int compareTo(@NonNull Market o) {
+		return name.compareTo(o.name);
 	}
 }
