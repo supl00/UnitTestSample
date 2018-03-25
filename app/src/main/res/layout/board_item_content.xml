@@ -22,7 +22,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/board_content_title_top_margin"
         android:gravity="center_vertical"
-        android:text="titletittletlietlseitltitletittletlietlseitltitletittletlietlseitl"
         android:textColor="@color/board_content_title_color"
         android:textSize="@dimen/board_content_title_text_size"
         android:textStyle="bold" />
@@ -31,11 +30,11 @@
         android:id="@+id/board_body"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/board_content_title_top_margin"
+        android:layout_marginTop="@dimen/board_content_body_top_margin"
         android:ellipsize="end"
         android:gravity="center_vertical"
-        android:lines="2"
-        android:text="바디다비답디ㅏ비다비다비다비다ㅣ바다ㅣ비디ㅏㄷ비닫바바바ㅏㅂ바ㅏㅂ디디디디디디디디다ㅏ밥바디다비다비ㅏㄷㄷ비ㅏ바디다비답디ㅏ비다비다비다비다ㅣ바다ㅣ비디ㅏㄷ비닫바바바ㅏㅂ바ㅏㅂ디디디디디디디디다ㅏ밥바디다비다비ㅏㄷㄷ비ㅏ"
+        android:lines="@integer/board_content_body_lines"
+        android:maxLines="@integer/board_content_body_lines"
         android:textColor="@color/board_content_body_color"
         android:textSize="@dimen/board_content_body_text_size" />
 
@@ -44,7 +43,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
-        android:layout_marginTop="@dimen/board_content_title_top_margin"
+        android:layout_marginTop="@dimen/board_content_info_top_margin"
         android:background="@drawable/badge_background"
         android:gravity="center_vertical"
         android:orientation="horizontal">

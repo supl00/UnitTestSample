@@ -1,10 +1,9 @@
 package com.gazua.ddeokrok.coinman.board.url;
 
+import com.gazua.ddeokrok.coinman.board.url.builder.UrlBuilder;
 import com.gazua.ddeokrok.coinman.common.Logger;
 
 import org.jsoup.nodes.Element;
-
-import io.reactivex.Observable;
 
 /**
  * Created by kimju on 2018-03-08.
@@ -13,6 +12,10 @@ import io.reactivex.Observable;
 public class BullpenServer extends BaseServer {
     private static final String TAG = "BullpenServer";
     private static final String URI_BULLPEN = "http://mlbpark.donga.com/mp/b.php?m=search&b=bullpen&query=%EC%BD%94%EC%9D%B8&select=sct";
+
+    public BullpenServer() {
+        super(UrlBuilder.TARGET_SERVER_BULLPEN);
+    }
 
     @Override
     public String baseUrl() {
@@ -27,6 +30,16 @@ public class BullpenServer extends BaseServer {
     @Override
     public String listTag() {
         return "div.contents > div.left_cont > div.tbl_box > table.tbl_type01 > tbody > tr";
+    }
+
+    @Override
+    public String bodyContentsTag() {
+        return "div.contents > div.left_cont";
+    }
+
+    @Override
+    public String bodyContentsTextTag() {
+        return "div.view_context > div.ar_txt";
     }
 
     @Override

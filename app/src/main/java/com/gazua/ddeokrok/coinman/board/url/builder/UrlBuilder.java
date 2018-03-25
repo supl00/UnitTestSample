@@ -1,9 +1,11 @@
-package com.gazua.ddeokrok.coinman.board.url;
+package com.gazua.ddeokrok.coinman.board.url.builder;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
 import com.gazua.ddeokrok.coinman.board.data.BoardData;
+import com.gazua.ddeokrok.coinman.board.url.BaseServer;
+import com.gazua.ddeokrok.coinman.board.url.builder.request.RequestBody;
 import com.gazua.ddeokrok.coinman.common.Logger;
 import com.gazua.ddeokrok.coinman.network.ApiUtils;
 import com.gazua.ddeokrok.coinman.network.PageService;
@@ -25,13 +27,12 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static android.content.ContentValues.TAG;
-
 /**
  * Created by kimju on 2018-03-09.
  */
 
 public class UrlBuilder {
+    private static final String TAG = "UrlBuilder";
     public static final String TARGET_SERVER_BULLPEN = "bullpen";
     public static final String TARGET_SERVER_CLIEN = "clien";
 
@@ -183,5 +184,9 @@ public class UrlBuilder {
             throw new RuntimeException(e.getMessage());
         }
         return list;
+    }
+
+    public RequestBody loadBody(String linkUrl) {
+        return new RequestBody(this.baseServers.get(0), linkUrl);
     }
 }

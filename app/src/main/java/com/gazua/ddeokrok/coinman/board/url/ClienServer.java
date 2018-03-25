@@ -1,5 +1,6 @@
 package com.gazua.ddeokrok.coinman.board.url;
 
+import com.gazua.ddeokrok.coinman.board.url.builder.UrlBuilder;
 import com.gazua.ddeokrok.coinman.common.Logger;
 
 import org.jsoup.nodes.Element;
@@ -14,6 +15,10 @@ public class ClienServer extends BaseServer {
     private static final String TAG = "ClienServer";
     private static final String URI_CLIEN = "https://clien.net/service/board/cm_vcoin?&od=T31";
 
+    public ClienServer() {
+        super(UrlBuilder.TARGET_SERVER_CLIEN);
+    }
+
     @Override
     public String baseUrl() {
         return URI_CLIEN;
@@ -27,6 +32,16 @@ public class ClienServer extends BaseServer {
     @Override
     public String listTag() {
         return "div.list_item.symph_row";
+    }
+
+    @Override
+    public String bodyContentsTag() {
+        return null;
+    }
+
+    @Override
+    public String bodyContentsTextTag() {
+        return null;
     }
 
     @Override
