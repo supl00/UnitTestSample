@@ -1,5 +1,7 @@
 package com.gazua.ddeokrok.coinman.chart.model.market;
 
+import android.support.annotation.NonNull;
+
 import com.gazua.ddeokrok.coinman.chart.model.CheckerInfo;
 import com.gazua.ddeokrok.coinman.chart.model.CurrencyPairInfo;
 import com.gazua.ddeokrok.coinman.chart.model.Market;
@@ -57,5 +59,10 @@ public class Poloniex extends Market {
 			
 			pairs.add(new CurrencyPairInfo(currencies[1], currencies[0], pairId)); //reversed pairs
 		}
+	}
+
+	@Override
+	public int compareTo(@NonNull Market o) {
+		return name.compareTo(o.name);
 	}
 }

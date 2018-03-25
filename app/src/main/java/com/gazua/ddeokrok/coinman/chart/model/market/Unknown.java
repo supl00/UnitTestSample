@@ -1,5 +1,7 @@
 package com.gazua.ddeokrok.coinman.chart.model.market;
 
+import android.support.annotation.NonNull;
+
 import com.gazua.ddeokrok.coinman.R;
 import com.gazua.ddeokrok.coinman.chart.model.CheckerInfo;
 import com.gazua.ddeokrok.coinman.chart.model.Market;
@@ -30,5 +32,10 @@ public class Unknown extends Market {
 	@Override
 	public String getUrl(int requestId, CheckerInfo checkerInfo) {
 		return URL;
+	}
+
+	@Override
+	public int compareTo(@NonNull Market o) {
+		return name.compareTo(o.name);
 	}
 }

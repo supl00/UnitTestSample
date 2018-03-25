@@ -1,6 +1,8 @@
 package com.gazua.ddeokrok.coinman.chart.model.market;
 
 
+import android.support.annotation.NonNull;
+
 import com.gazua.ddeokrok.coinman.chart.model.CheckerInfo;
 import com.gazua.ddeokrok.coinman.chart.model.Market;
 import com.gazua.ddeokrok.coinman.chart.model.Ticker;
@@ -48,5 +50,10 @@ public class Upbit extends Market {
         responseString = responseString.replace("]", "");
         super.parseTicker(requestId, responseString, ticker, checkerInfo);
 //        parseTickerFromJsonObject(requestId, new JSONObject(responseString), ticker, checkerInfo);
+    }
+
+    @Override
+    public int compareTo(@NonNull Market o) {
+        return name.compareTo(o.name);
     }
 }

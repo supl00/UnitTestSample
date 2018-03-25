@@ -12,11 +12,11 @@
     <application
         android:allowBackup="true"
         android:icon="@mipmap/coin_ic_launcher"
-        android:label="@string/app_name"
+        android:label="@string/main_app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:replace="android:icon">
+        tools:replace="android:label, android:icon">
         <activity android:name=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -30,6 +30,10 @@
             android:name="com.thefinestartist.finestwebview.FinestWebViewActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/FinestWebViewTheme.Light" />
+
+        <activity
+            android:name=".chart.coinpicker.CoinPickerActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize" />
     </application>
 
 </manifest>

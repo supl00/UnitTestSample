@@ -1,5 +1,7 @@
 package com.gazua.ddeokrok.coinman.chart.model.market;
 
+import android.support.annotation.NonNull;
+
 import com.gazua.ddeokrok.coinman.chart.model.CheckerInfo;
 import com.gazua.ddeokrok.coinman.chart.model.Market;
 import com.gazua.ddeokrok.coinman.chart.model.Ticker;
@@ -83,4 +85,9 @@ public class Coinone extends Market {
         JSONObject first = array.getJSONObject(0);
         return first.getDouble("price");
     }
+
+	@Override
+	public int compareTo(@NonNull Market o) {
+		return name.compareTo(o.name);
+	}
 }

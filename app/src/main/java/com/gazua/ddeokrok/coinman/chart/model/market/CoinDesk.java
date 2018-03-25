@@ -1,5 +1,7 @@
 package com.gazua.ddeokrok.coinman.chart.model.market;
 
+import android.support.annotation.NonNull;
+
 import com.gazua.ddeokrok.coinman.chart.model.CheckerInfo;
 import com.gazua.ddeokrok.coinman.chart.model.CurrencyPairInfo;
 import com.gazua.ddeokrok.coinman.chart.model.Market;
@@ -50,5 +52,10 @@ public class CoinDesk extends Market {
 		for(int i=0; i<currencyCounterNames.length(); ++i) {
 			pairs.add(new CurrencyPairInfo(VirtualCurrency.BTC, currencyCounterNames.getString(i), null));
 		}
+	}
+
+	@Override
+	public int compareTo(@NonNull Market o) {
+		return name.compareTo(o.name);
 	}
 }

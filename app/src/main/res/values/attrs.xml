@@ -4,4 +4,8 @@
         <attr name="scrollSensitiveHeight" format="dimension" />
         <attr name="placeholderView" format="reference" />
     </declare-styleable>
+    <declare-styleable name="HollyViewPager">
+        <attr name="hvp_headerHeight" format="dimension"/>
+        <attr name="hvp_headerBackgroundView" format="reference"/>
+    </declare-styleable>
 </resources>

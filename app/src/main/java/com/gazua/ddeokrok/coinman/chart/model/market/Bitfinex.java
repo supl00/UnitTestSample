@@ -1,5 +1,7 @@
 package com.gazua.ddeokrok.coinman.chart.model.market;
 
+import android.support.annotation.NonNull;
+
 import com.gazua.ddeokrok.coinman.chart.model.CheckerInfo;
 import com.gazua.ddeokrok.coinman.chart.model.CurrencyPairInfo;
 import com.gazua.ddeokrok.coinman.chart.model.Market;
@@ -141,5 +143,10 @@ public class Bitfinex extends Market {
 						pairId));
 			}
 		}
+	}
+
+	@Override
+	public int compareTo(@NonNull Market o) {
+		return name.compareTo(o.name);
 	}
 }
