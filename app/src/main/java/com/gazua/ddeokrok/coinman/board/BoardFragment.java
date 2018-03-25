@@ -90,7 +90,7 @@ public class BoardFragment extends Fragment implements FabActionListener {
 ////                            boardRecyclerView.getAdapter().notifyDataSetChanged();
 ////                            swipeRefreshLayout.setRefreshing(false);
 //                        });
-        UrlBuilder.target(UrlBuilder.TARGET_SERVER_BULLPEN)
+        UrlBuilder.target(UrlBuilder.TARGET_SERVER_CLIEN, UrlBuilder.TARGET_SERVER_BULLPEN)
                 .page(page)
                 .category(UrlBuilder.CATEGORY_COIN)
                 .query(boardDatas -> {

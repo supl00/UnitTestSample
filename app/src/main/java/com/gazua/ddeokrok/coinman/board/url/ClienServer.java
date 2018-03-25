@@ -36,12 +36,12 @@ public class ClienServer extends BaseServer {
 
     @Override
     public String bodyContentsTag() {
-        return null;
+        return "div.content_view";
     }
 
     @Override
     public String bodyContentsTextTag() {
-        return null;
+        return "div.post_view > div.post_content > article > div";
     }
 
     @Override
