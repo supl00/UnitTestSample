@@ -19,6 +19,8 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.gazua.ddeokrok.coinman.R;
 import com.gazua.ddeokrok.coinman.board.data.BoardData;
+import com.gazua.ddeokrok.coinman.board.url.BaseServer;
+import com.gazua.ddeokrok.coinman.board.url.UrlBuilder;
 import com.thefinestartist.finestwebview.FinestWebView;
 
 import java.util.List;
@@ -63,9 +65,7 @@ public class BoardRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
                 final CardViewHolder h = (CardViewHolder) holder;
                 BoardData data = this.datas.get(position);
                 h.update(data);
-                h.setOnItemClickListener(v -> {
-                    new FinestWebView.Builder(holder.itemView.getContext()).show(data.getLinkUrl());
-                });
+                h.setOnItemClickListener(v -> new FinestWebView.Builder(holder.itemView.getContext()).show(data.getLinkUrl()));
                 h.setOnClickFavoriteListener(v -> {
 
                 });
@@ -109,9 +109,10 @@ public class BoardRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
         }
 
         void update(@NonNull BoardData data) {
-            this.boardName.setText(itemView.getContext().getString(data.getBoardNameResId()));
+            this.boardName.setText(BaseServer.getBoardName(itemView.getContext(), data.getTarget()));
             this.title.setText(data.getTitle());
-//            this.body.setText(data.getBody());
+            this.body.setText(data.getBody());
+            this.body.requestLayout();
             this.userName.setText(data.getUserName());
             this.userName.requestLayout();
             this.userImage.setImageDrawable(null);
@@ -140,6 +141,28 @@ public class BoardRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
                                 }
                             })
                             .into(this.userImage));
+            Single.just(data)
+                    .filter(boardData -> TextUtils.isEmpty(boardData.getBody()))
+                    .filter(boardData -> !TextUtils.isEmpty(boardData.getLinkUrl()))
+                    .subscribe(boardData -> {
+                        UrlBuilder.target(data.getTarget())
+                                .loadBody(data.getLinkUrl())
+                                .listener(boardData::setBody)
+                                .into(body);
+                    });
+//
+//            PageService pageService = ApiUtils.getRpJsoupService();
+//            String content = pageService.selectContentGetSubList(url).execute().body().getContent();
+//            return Maybe.just(content)
+//                    .filter(Objects::nonNull)
+//                    .map(Jsoup::parse)
+//                    .map(document -> document.select(server.bodyContentsTag()))
+//                    .map(elements -> elements.select(server.bodyContentsTextTag()).text())
+//                    .blockingGet("");
+//            Maybe.just(data)
+//                    .filter(boardData -> Objects.nonNull(boardData.getLinkUrl()))
+//                    .filter(boardData -> Objects.isNull(boardData.getBody()))
+//                    .map(boardData -> new Pair<BoardData, >())
         }
 
         void setOnItemClickListener(View.OnClickListener listener) {

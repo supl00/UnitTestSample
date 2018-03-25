@@ -1,5 +1,6 @@
 package com.gazua.ddeokrok.coinman.board.url;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 import android.text.TextUtils;
@@ -28,6 +29,11 @@ public abstract class BaseServer {
 
     protected int category = UrlBuilder.CATEGORY_COIN;
     protected int currentPage = 0;
+    protected String target;
+
+    public BaseServer(String target) {
+        this.target = target;
+    }
 
     public static BaseServer asServer(String server) throws IllegalArgumentException {
         Logger.d(TAG, "asServer, server : " + server);
@@ -43,6 +49,10 @@ public abstract class BaseServer {
                 throw new IllegalArgumentException("Target server not exist!!");
         }
         return baseServer;
+    }
+
+    public String target() {
+        return target;
     }
 
     public abstract String baseUrl();
@@ -61,6 +71,10 @@ public abstract class BaseServer {
     }
 
     public abstract String listTag();
+
+    public abstract String bodyContentsTag();
+
+    public abstract String bodyContentsTextTag();
 
     public abstract String pageTag();
 
@@ -103,7 +117,7 @@ public abstract class BaseServer {
                 .map(Jsoup::parse)
                 .map(document -> document.select(server.listTag()))
                 .flatMapObservable(Observable::fromIterable)
-                .map(elements -> BoardData.asData(getBoardNameResId(server),
+                .map(elements -> BoardData.asData(server.target(),
                         server.parseTitle(elements),
                         server.parseDate(elements),
                         server.parseHitsCount(elements),
@@ -114,13 +128,16 @@ public abstract class BaseServer {
                 .filter(data -> !TextUtils.isEmpty(data.getTitle()));
     }
 
-    private static int getBoardNameResId(BaseServer server) {
+    public static String getBoardName(@NonNull Context context, String type) {
         int resId = R.string.server_clien;
-        if (server instanceof ClienServer) {
-            resId = R.string.server_clien;
-        } else if (server instanceof BullpenServer) {
-            resId = R.string.server_bullpen;
+        switch (type) {
+            case UrlBuilder.TARGET_SERVER_CLIEN:
+                resId = R.string.server_clien;
+                break;
+            case UrlBuilder.TARGET_SERVER_BULLPEN:
+                resId = R.string.server_bullpen;
+                break;
         }
-        return resId;
+        return context.getString(resId);
     }
 }

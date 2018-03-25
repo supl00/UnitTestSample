@@ -7,18 +7,18 @@ import android.text.TextUtils;
  */
 
 public class BoardData {
-    int boardNameResId;
+    String target;
     String title;
+    String body;
     String date;
     String viewCount;
     String commentCount;
     String linkUrl;
     String userName;
     String userImage;
-    String body;
 
-    public BoardData(int boardNameResId, String title, String date, String viewCount, String commentCount, String linkUrl, String userName, String userImage) {
-        this.boardNameResId = boardNameResId;
+    public BoardData(String target, String title, String date, String viewCount, String commentCount, String linkUrl, String userName, String userImage) {
+        this.target= target;
         this.title = title;
         this.date = date;
         this.viewCount = TextUtils.isEmpty(viewCount) ? "0" : viewCount;
@@ -56,21 +56,26 @@ public class BoardData {
         return userImage;
     }
 
-    public int getBoardNameResId() {
-        return boardNameResId;
-    }
-
-    public static BoardData asData(int boardNameResId, String title, String date, String viewCount, String commentCount, String linkUrl, String userName, String userImage) {
-        return new BoardData(boardNameResId, title, date, viewCount, commentCount, linkUrl, userName, userImage);
-    }
-
-    @Override
-    public String toString() {
-        return "[ title : " + this.title + ", date : " + this.date + ", viewCount : " + this.viewCount + ", commentCount : " + this.commentCount + ", linkUrl : "
-                                    + this.linkUrl + ", userName : " + this.userName + ", userimage : " + this.userImage + " ]";
+    public BoardData setBody(String body) {
+        this.body = body;
+        return this;
     }
 
     public String getBody() {
         return body;
+    }
+
+    public String getTarget() {
+        return target;
+    }
+
+    public static BoardData asData(String target, String title, String date, String viewCount, String commentCount, String linkUrl, String userName, String userImage) {
+        return new BoardData(target, title, date, viewCount, commentCount, linkUrl, userName, userImage);
+    }
+
+    @Override
+    public String toString() {
+        return "[ target : " + target + ", title : " + this.title + ", body : " + this.body + ", date : " + this.date + ", viewCount : " + this.viewCount + ", commentCount : " + this.commentCount + ", linkUrl : "
+                                    + this.linkUrl + ", userName : " + this.userName + ", userimage : " + this.userImage + " ]";
     }
 }

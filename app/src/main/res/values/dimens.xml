@@ -31,8 +31,10 @@
     <dimen name="board_bottom_menu_padding">10dp</dimen>
     <dimen name="board_content_title_text_size">18sp</dimen>
     <dimen name="board_content_body_text_size">15sp</dimen>
-    <dimen name="board_content_title_top_margin">15dp</dimen>
-    <dimen name="board_content_body_top_margin">10dp</dimen>
+    <dimen name="board_content_title_top_margin">12dp</dimen>
+    <dimen name="board_content_body_top_margin">4dp</dimen>
+    <dimen name="board_content_info_top_margin">10dp</dimen>
+    <integer name="board_content_body_lines">2</integer>
     <dimen name="board_bottom_icon_size">13dp</dimen>
     <dimen name="board_bottom_menu_text_size">12sp</dimen>
     <dimen name="board_bottom_menu_view_margin_horizontal">15dp</dimen>

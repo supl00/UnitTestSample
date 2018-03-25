@@ -31,8 +31,6 @@ import io.reactivex.Single;
 
 public class BoardFragment extends Fragment implements FabActionListener {
     private static final String TAG = "BoardFragment";
-    private static final String URI_CLIEN = "https://m.clien.net/service/board/cm_vcoin";
-    private static final String URI_BULLPEN = "http://mlbpark.donga.com/mp/b.php?m=search&b=bullpen&query=%EC%BD%94%EC%9D%B8&select=sct";
 
     private int mPageCount = 0;
     private RecyclerView boardRecyclerView;
@@ -49,7 +47,7 @@ public class BoardFragment extends Fragment implements FabActionListener {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_board_main, null);
         this.boardRecyclerView = view.findViewById(R.id.recycler_view);
-        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
+        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
         swipeRefreshLayout.setOnRefreshListener(() -> {
             loadPage(mPageCount = 0);
         });
@@ -92,7 +90,7 @@ public class BoardFragment extends Fragment implements FabActionListener {
 ////                            boardRecyclerView.getAdapter().notifyDataSetChanged();
 ////                            swipeRefreshLayout.setRefreshing(false);
 //                        });
-        UrlBuilder.target(UrlBuilder.TARGET_SERVER_CLIEN, UrlBuilder.TARGET_SERVER_BULLPEN)
+        UrlBuilder.target(UrlBuilder.TARGET_SERVER_BULLPEN)
                 .page(page)
                 .category(UrlBuilder.CATEGORY_COIN)
                 .query(boardDatas -> {
@@ -112,6 +110,9 @@ public class BoardFragment extends Fragment implements FabActionListener {
     @Override
     public void onClickFab(FloatingActionButton fab) {
         Logger.d(TAG, "onClickFab, fab : " + fab);
+        if (boardRecyclerView == null) {
+            return;
+        }
         final int startPosition = 8;
         Single.fromCallable(() -> ((LinearLayoutManager) boardRecyclerView.getLayoutManager()))
                 .filter(Objects::nonNull)
