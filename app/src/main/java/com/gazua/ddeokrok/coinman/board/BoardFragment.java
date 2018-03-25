@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 
 import com.gazua.ddeokrok.coinman.R;
 import com.gazua.ddeokrok.coinman.board.data.BoardData;
-import com.gazua.ddeokrok.coinman.board.url.UrlBuilder;
+import com.gazua.ddeokrok.coinman.board.url.builder.UrlBuilder;
 import com.gazua.ddeokrok.coinman.common.FabActionListener;
 import com.gazua.ddeokrok.coinman.common.Logger;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;

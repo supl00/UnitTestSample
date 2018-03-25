@@ -7,6 +7,7 @@ import android.text.TextUtils;
 
 import com.gazua.ddeokrok.coinman.R;
 import com.gazua.ddeokrok.coinman.board.data.BoardData;
+import com.gazua.ddeokrok.coinman.board.url.builder.UrlBuilder;
 import com.gazua.ddeokrok.coinman.common.Logger;
 
 import org.jsoup.Jsoup;

@@ -20,7 +20,7 @@ import com.bumptech.glide.request.target.Target;
 import com.gazua.ddeokrok.coinman.R;
 import com.gazua.ddeokrok.coinman.board.data.BoardData;
 import com.gazua.ddeokrok.coinman.board.url.BaseServer;
-import com.gazua.ddeokrok.coinman.board.url.UrlBuilder;
+import com.gazua.ddeokrok.coinman.board.url.builder.UrlBuilder;
 import com.thefinestartist.finestwebview.FinestWebView;
 
 import java.util.List;
@@ -144,12 +144,10 @@ public class BoardRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.
             Single.just(data)
                     .filter(boardData -> TextUtils.isEmpty(boardData.getBody()))
                     .filter(boardData -> !TextUtils.isEmpty(boardData.getLinkUrl()))
-                    .subscribe(boardData -> {
-                        UrlBuilder.target(data.getTarget())
-                                .loadBody(data.getLinkUrl())
-                                .listener(boardData::setBody)
-                                .into(body);
-                    });
+                    .subscribe(boardData -> UrlBuilder.target(data.getTarget())
+                            .loadBody(data.getLinkUrl())
+                            .listener(boardData::setBody)
+                            .into(body));
 //
 //            PageService pageService = ApiUtils.getRpJsoupService();
 //            String content = pageService.selectContentGetSubList(url).execute().body().getContent();
