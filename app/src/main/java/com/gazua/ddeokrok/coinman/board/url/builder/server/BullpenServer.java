@@ -1,4 +1,4 @@
-package com.gazua.ddeokrok.coinman.board.url;
+package com.gazua.ddeokrok.coinman.board.url.builder.server;
 
 import com.gazua.ddeokrok.coinman.board.url.builder.UrlBuilder;
 import com.gazua.ddeokrok.coinman.common.Logger;

@@ -4,8 +4,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
 import com.gazua.ddeokrok.coinman.board.data.BoardData;
-import com.gazua.ddeokrok.coinman.board.url.BaseServer;
 import com.gazua.ddeokrok.coinman.board.url.builder.request.RequestBody;
+import com.gazua.ddeokrok.coinman.board.url.builder.server.BaseServer;
 import com.gazua.ddeokrok.coinman.common.Logger;
 import com.gazua.ddeokrok.coinman.network.ApiUtils;
 import com.gazua.ddeokrok.coinman.network.PageService;

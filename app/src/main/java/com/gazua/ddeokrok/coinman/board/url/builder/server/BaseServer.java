@@ -1,4 +1,4 @@
-package com.gazua.ddeokrok.coinman.board.url;
+package com.gazua.ddeokrok.coinman.board.url.builder.server;
 
 import android.content.Context;
 import android.support.annotation.NonNull;

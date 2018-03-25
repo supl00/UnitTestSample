@@ -3,7 +3,7 @@ package com.gazua.ddeokrok.coinman.board.url.builder.request;
 import android.util.Pair;
 import android.widget.TextView;
 
-import com.gazua.ddeokrok.coinman.board.url.BaseServer;
+import com.gazua.ddeokrok.coinman.board.url.builder.server.BaseServer;
 import com.gazua.ddeokrok.coinman.common.Logger;
 import com.gazua.ddeokrok.coinman.network.ApiUtils;
 import com.gazua.ddeokrok.coinman.network.PageService;

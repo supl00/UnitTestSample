@@ -19,8 +19,8 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.gazua.ddeokrok.coinman.R;
 import com.gazua.ddeokrok.coinman.board.data.BoardData;
-import com.gazua.ddeokrok.coinman.board.url.BaseServer;
 import com.gazua.ddeokrok.coinman.board.url.builder.UrlBuilder;
+import com.gazua.ddeokrok.coinman.board.url.builder.server.BaseServer;
 import com.thefinestartist.finestwebview.FinestWebView;
 
 import java.util.List;
